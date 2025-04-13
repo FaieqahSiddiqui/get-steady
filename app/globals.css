@@ -62,11 +62,12 @@
   --color-lightBlueBorder: #064070;
   --color-lightGreyBorder: #48484982;
   --color-BG: #111827;
-  --color-heroBgStart: #1f2b3b;
+  --color-heroBgStart: #212d3c;
   --color-greyText: #d1d5dc;
 
   --color-footerBgStart:#1447e6;
   --color-footerBgEnd:#1c398e;
+ 
 } 
 
 /* .light {
