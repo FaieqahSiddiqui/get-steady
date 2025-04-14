@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const LandingHeader = () => {
   return (
-    <header className="w-full flex justify-between fixed h-17 py-4 px-8 z-50 border-b border-b-lightGreyBorder bg-BG/60 backdrop-blur-md">
+    <header className="w-full flex justify-between fixed h-17 py-4 px-4 md:px-8 z-50 border-b border-b-lightGreyBorder bg-BG/60 backdrop-blur-md">
       <Link href="/">
         <Logo />
       </Link>
