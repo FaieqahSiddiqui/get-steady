@@ -12,7 +12,11 @@ const ThemeToggle = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null; //prevent hydration mismatch
+  if (!mounted) {
+    //return null;  //prevent hydration mismatch
+    // 👇 This placeholder reserves space to prevent layout shift
+    return <div className="w-9 h-9" />;
+  }
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
