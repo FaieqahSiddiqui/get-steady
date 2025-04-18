@@ -1,16 +1,81 @@
-import React from "react";
+"use client";
+import { useState } from "react";
+import { Logo } from "../components/Logo";
 import LandingHeader from "../components/LandingHeader";
 import SignupForm from "./components/SignupForm";
+import LoginForm from "./components/LoginForm";
+import { ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
 
+
+type AuthView = "login" | "signup";
 const page = () => {
-  return (
-  <div>
-  {/* This comment was created using the code space */}
-      <LandingHeader></LandingHeader>
+  const [activeView, setActiveView] = useState<AuthView>("login");
 
-      <SignupForm></SignupForm>
+  
+  return (
+    <div className="relative min-h-screen bg-gradient-to-b from-heroBgStart to-BG">
+      <LandingHeader />
+
+      {/* Optional decorative overlay */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_30%_30%,rgba(59,130,246,0.1),transparent)] " />
+
+      {/* Centered content */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 pt-26 pb-12 ">
+        <div className="mb-10 transform hover:scale-105 transition-transform">
+          <Logo className="h-8 w-8" />
+        </div>
+
+        <div className="w-full rounded-2xl bg-BG/80 p-6 md:p-8 shadow-2xl max-w-md">
+          <div className="text-center mb-6 space-y-1">
+            <h2 className="text-xl font-bold tracking-tight">
+              {activeView === "login" ? "Welcome Back" : "Create Account"}
+            </h2>
+            <p className="text-greyText">
+              {activeView === "login"
+                ? "Continue your journey to better habits"
+                : "Start your journey to better habits"}
+            </p>
+          </div>
+
+          {activeView === "login" ? <LoginForm /> : <SignupForm />}
+            {/* Login/signup state change */}
+
+        <div className="mt-4 flex justify-center items-center">
+          {activeView === "login" ? (
+            <div className="flex items-center gap-2 text-sm text-greyText">
+              <span>New to GetSteady?</span>
+              <button
+                className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group"
+                onClick={() => setActiveView("signup")}
+              >
+                Create an account
+                <ArrowRight
+                  size={14}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-sm text-greyText">
+              <span>Already have an account?</span>
+              <button
+                className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group"
+                onClick={() => setActiveView("login")}
+              >
+                <ArrowLeft
+                  size={14}
+                  className="transition-transform group-hover:-translate-x-1"
+                />
+                Log in
+              </button>
+            </div>
+          )}
+        </div>
+        </div>
+      </div>
     </div>
   );
 };
+
 
 export default page;

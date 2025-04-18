@@ -35,31 +35,32 @@ const LandingFeatures = () => {
     },
   ];
   return (
-    <div className="w-full py-16 px-4 flex flex-col items-center bg-BG ">
-      <div className="w-18 h-1 bg-primaryBlue rounded-full" />
-      <h2 className="text-3xl font-bold pt-16 mb-4 max-w-lg">
-        Everything you need to succeed
-      </h2>
-      <p className=" max-w-lg mb-16 text-center">
-        Our platform combines powerful features to help you stay on track and
-        achieve your goals
-      </p>
+    <div className="w-full py-16 bg-BG ">
+      <div className="max-w-7xl w-full px-4 md:px-8 flex flex-col items-center mx-auto">
+        <div className="w-18 h-1 bg-primaryBlue rounded-full" />
+        <h2 className="text-3xl font-bold pt-16 mb-4 max-w-lg">
+          Everything you need to succeed
+        </h2>
+        <p className=" max-w-lg mb-16 text-center">
+          Our platform combines powerful features to help you stay on track and
+          achieve your goals
+        </p>
 
-      {/* Feature Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-8">
-        {features.map((feature, index) => (
-          <div
-            key={index}
-            className="group p-6 rounded-xl bg-gradient-to-b from-BG to to-heroBgStart/60 border border-lightGreyBorder hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-
-            <div className="transform transition-transform group-hover:scale-110 group-hover:-translate-x-1 rounded-full w-fit mb-4">{feature.icon}</div>
-            <h3 className="text-xl font-medium mb-2">
-                {feature.title}
-              </h3>
+        {/* Feature Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-8">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="group p-6 rounded-xl bg-gradient-to-b from-BG to to-heroBgStart/60 border border-lightGreyBorder hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="transform transition-transform group-hover:scale-110 group-hover:-translate-x-1 rounded-full w-fit mb-4">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-medium mb-2">{feature.title}</h3>
               <p className="text-greyText">{feature.description}</p>
-
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
