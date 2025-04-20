@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { login } from "./actions";
-import Link from "next/link";
+import { AuthView } from "../../constants/types";
 
-const LoginForm = () => {
+type Props = { changeView: (v: AuthView) => void };
+
+const LoginForm = ({ changeView }: Props) => {
   const [showPW, setshowPW] = useState(false);
+
   return (
     <div>
+      <div className="text-center mb-6 space-y-1">
+        <h2 className="text-xl font-bold tracking-tight">Welcome Back</h2>
+        <p className="text-greyText">Continue your journey to better habits</p>
+      </div>
+
       <form className="space-y-4">
         {/* Email Label & Input */}
         <div className="space-y-1.5 flex flex-col">
@@ -35,13 +43,13 @@ const LoginForm = () => {
             >
               Password
             </label>
-            {/* Forgot Password */}
-            <Link
-              href="/auth/forgot-pw"
+
+            <button
               className="text-primaryBlue text-sm hover:underline"
+              onClick={() => changeView("forgot")}
             >
               Forgot password?
-            </Link>
+            </button>
           </div>
 
           <input
@@ -71,6 +79,22 @@ const LoginForm = () => {
           <ArrowRight></ArrowRight>
         </button>
       </form>
+
+      <div className="mt-4 flex justify-center items-center">
+        <div className="flex items-center gap-2 text-sm text-greyText">
+          <span>New to GetSteady?</span>
+          <button
+            className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group"
+            onClick={() => changeView("signup")}
+          >
+            Create an account
+            <ArrowRight
+              size={14}
+              className="transition-transform group-hover:translate-x-1"
+            />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

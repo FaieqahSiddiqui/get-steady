@@ -47,11 +47,24 @@ export async function updateSession(request: NextRequest) {
     */
 
     !user &&
-    !request.nextUrl.pathname.startsWith('/auth') &&  // Avoid redirect if already on /auth page
-    !request.nextUrl.pathname.startsWith('/')   &&
-    !request.nextUrl.pathname.startsWith('/auth/forgot-pw') 
+    !request.nextUrl.pathname.includes('/auth/reset-pw') &&  // Avoid redirect if already on /auth page
+    // !request.nextUrl.pathname.startsWith('/')   &&
+    !request.nextUrl.pathname.startsWith('/auth') &&
+    !request.nextUrl.pathname.startsWith('/auth?') // Allow any query params related to /auth
+
   ) {
     // no user, potentially respond by redirecting the user to the login page
+    console.log('Pathname:', request.nextUrl.pathname);
+    console.log('Query Params:', request.nextUrl.searchParams.toString());
+    console.log('User:', user);
+
+    console.log('Request URL:', request.url);
+console.log('Next URL Href:', request.nextUrl.href);
+
+
+
+
+    
     const url = request.nextUrl.clone()
     url.pathname = '/auth'
     return NextResponse.redirect(url)

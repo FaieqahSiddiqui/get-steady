@@ -1,10 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Logo } from "@/app/components/Logo";
 import LandingHeader from "@/app/components/LandingHeader";
 import ForgotPassword from "../components/ForgotPassword";
+import ResetPW from "../components/ResetPW";
+import { useSearchParams } from 'next/navigation'
+
 
 const page = () => {
+  const params = useSearchParams()
+  const token = params.get('access_token')
+  useEffect(() => {
+    console.log('access_token:', token)
+  }, [token])
+
   return (
     <div
       className="relative min-h-screen bg-gradient-to-b from-heroBgStart to-BG 
@@ -31,7 +40,7 @@ const page = () => {
             </p>
           </div>
 
-          <ForgotPassword/>
+          <ResetPW/>
         </div>
 
         

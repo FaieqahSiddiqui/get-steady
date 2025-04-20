@@ -1,8 +1,6 @@
 'use server'
-
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-
 import { createClient } from '@/app/utils/supabase/server'
 
 export async function login(formData: FormData) {
@@ -60,4 +58,30 @@ await supabase.auth.signOut()
 revalidatePath('/','layout')
 redirect('/') // or homepage if you prefer
 
+}
+
+
+export async function resetpwpage(formData: FormData ){
+  const email = formData.get('email') as string;
+  const supabase = await createClient();
+  
+  const {error} = await supabase.auth.resetPasswordForEmail(email,{
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/reset-pw`,
+  });
+
+  if(error){
+    throw new Error(error.message);
+  }
+}
+
+export async function updatepassword(formData: FormData){
+  const supabase = await createClient();
+  const { error }= await supabase.auth.updateUser({ password: 'new_password' })
+
+  if (error) {
+    throw new Error(error.message); // or handle error gracefully
+  }
+
+  // redirect to login or dashboard after success
+  redirect('/dashboard');
 }
