@@ -38,7 +38,7 @@ const ForgotPassword = ({ changeView }: Props) => {
         {/* Reset Instructions button */}
         <button
           formAction={resetpwpage}
-          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue "
+          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue cursor-pointer"
         >
           Send Reset Instructions
           <ArrowRight></ArrowRight>

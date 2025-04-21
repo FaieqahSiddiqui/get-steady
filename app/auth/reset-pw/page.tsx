@@ -2,18 +2,52 @@
 import { useState,useEffect } from "react";
 import { Logo } from "@/app/components/Logo";
 import LandingHeader from "@/app/components/LandingHeader";
-import ForgotPassword from "../components/ForgotPassword";
 import ResetPW from "../components/ResetPW";
 import { useSearchParams } from 'next/navigation'
+import { createClient } from '@/app/utils/supabase/clients'
+
 
 
 const page = () => {
-  const params = useSearchParams()
-  const token = params.get('access_token')
-  useEffect(() => {
-    console.log('access_token:', token)
-  }, [token])
+  
 
+  // const token = searchParams.get('access_token')
+
+
+  // useEffect(() => {
+  //   console.log('access_token:', token)
+  // }, [token])
+
+  const [sessionReady, setSessionReady] = useState(false)
+  const [error, setError] = useState('')
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const code = searchParams.get('code')
+    if (!code) {
+      setError('Reset code not found in URL.')
+      return
+    }
+
+
+    const exchangeSession = async () => {
+      const supabase = await createClient()
+      const { error } = await supabase.auth.exchangeCodeForSession(code)
+      if (error) {
+        console.error('Error exchanging code:', error.message)
+        setError('Invalid or expired reset link.')
+      } else {
+        setSessionReady(true)
+      }
+    }
+
+    exchangeSession()
+  }, [searchParams])
+
+  if (error) return <p className="text-red-600 p-4">{error}</p>
+  if (!sessionReady) return <p className="p-4">Setting up your session...</p>
+
+    
   return (
     <div
       className="relative min-h-screen bg-gradient-to-b from-heroBgStart to-BG 
