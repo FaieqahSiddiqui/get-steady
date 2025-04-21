@@ -15,7 +15,7 @@ const LoginForm = ({ changeView }: Props) => {
         <p className="text-greyText">Continue your journey to better habits</p>
       </div>
 
-      <form className="space-y-4">
+      <form action={login} className="space-y-4">
         {/* Email Label & Input */}
         <div className="space-y-1.5 flex flex-col">
           <label
@@ -45,6 +45,7 @@ const LoginForm = ({ changeView }: Props) => {
             </label>
 
             <button
+            type="button"
               className="text-primaryBlue text-sm hover:underline"
               onClick={() => changeView("forgot")}
             >
@@ -72,7 +73,8 @@ const LoginForm = ({ changeView }: Props) => {
 
         {/* Login/SignUp button */}
         <button
-          formAction={login}
+        type="submit"
+          // formAction={login}
           className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue "
         >
           Log In

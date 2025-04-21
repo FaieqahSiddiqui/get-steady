@@ -4,6 +4,11 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/app/utils/supabase/server'
 
 export async function login(formData: FormData) {
+
+  console.log('✅ login server action triggered');
+  // Log the headers to debug the issue
+  console.log('Request Headers:', formData);
+
   const supabase = await createClient()
 
   // type-casting here for convenience

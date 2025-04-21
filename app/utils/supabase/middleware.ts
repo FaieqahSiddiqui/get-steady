@@ -2,6 +2,15 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
+
+
+  console.log('🛡️ Middleware running!')
+  console.log('🌐 Origin:', request.headers.get('origin'))
+  console.log('📡 X-Forwarded-Host:', request.headers.get('x-forwarded-host'))
+  console.log('🧭 Path:', request.nextUrl.pathname)
+  console.log('🔗 Full URL:', request.url)
+
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -60,6 +69,10 @@ export async function updateSession(request: NextRequest) {
 
     console.log('Request URL:', request.url);
 console.log('Next URL Href:', request.nextUrl.href);
+
+console.log('Origin Header:', request.headers.get('origin'))
+console.log('X-Forwarded-Host:', request.headers.get('x-forwarded-host'))
+
 
 
 
