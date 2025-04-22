@@ -25,7 +25,7 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  redirect('/dashboard?login=success')
 }
 
 export async function signup(formData: FormData) {
@@ -80,8 +80,10 @@ export async function resetpwpage(formData: FormData ){
 }
 
 export async function updatepassword(formData: FormData){
+  const newPassword = formData.get('new_password') as string
+
   const supabase = await createClient();
-  const { error }= await supabase.auth.updateUser({ password: 'new_password' })
+  const { error }= await supabase.auth.updateUser({ password: newPassword })
 
   if (error) {
     throw new Error(error.message); // or handle error gracefully

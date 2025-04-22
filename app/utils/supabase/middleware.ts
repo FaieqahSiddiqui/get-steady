@@ -55,10 +55,12 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/auth')
     */
 
+    //for logged out users
     !user &&
     !request.nextUrl.pathname.includes('/auth/reset-pw') &&  // Avoid redirect if already on /auth page
     // !request.nextUrl.pathname.startsWith('/')   &&
     !request.nextUrl.pathname.startsWith('/auth') &&
+    !request.nextUrl.pathname.startsWith('/') &&
     !request.nextUrl.pathname.startsWith('/auth?') // Allow any query params related to /auth
 
   ) {

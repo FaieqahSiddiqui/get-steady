@@ -75,7 +75,7 @@ const SignupForm = ({ newView }: Props) => {
             type="button"
             aria-label="Toggle password visibility"
             onClick={() => setshowPW((prev) => !prev)}
-            className="absolute right-3 top-9.5 text-greyText/60 hover:text-blue-500"
+            className="absolute right-3 top-9.5 text-greyText/60 hover:text-blue-500 cursor-pointer"
           >
             {showPW ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -84,7 +84,7 @@ const SignupForm = ({ newView }: Props) => {
         {/* Login/SignUp button */}
         <button
           formAction={signup}
-          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue "
+          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue cursor-pointer"
         >
           Sign Up
           <ArrowRight></ArrowRight>
@@ -97,12 +97,12 @@ const SignupForm = ({ newView }: Props) => {
         <div className="flex items-center gap-2 text-sm text-greyText">
           <span>Already have an account?</span>
           <button
-            className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group"
+            className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group cursor-pointer"
             onClick={() => newView("login")}
           >
             <ArrowLeft
               size={14}
-              className="transition-transform group-hover:-translate-x-1"
+              className="transition-transform group-hover:-translate-x-1 "
             />
             Log in
           </button>

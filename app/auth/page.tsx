@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Logo } from "../components/Logo";
 import LandingHeader from "../components/LandingHeader";
 import SignupForm from "./components/SignupForm";
@@ -7,8 +7,11 @@ import LoginForm from "./components/LoginForm";
 import ForgotPassword from "./components/ForgotPassword";
 import { AuthView } from "../constants/types";
 
+
+
 const page = () => {
   const [activeView, setActiveView] = useState<AuthView>("login");
+
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-heroBgStart to-BG">

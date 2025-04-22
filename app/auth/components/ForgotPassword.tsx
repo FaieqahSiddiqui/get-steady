@@ -49,7 +49,7 @@ const ForgotPassword = ({ changeView }: Props) => {
         <div className="flex items-center gap-2 text-sm text-greyText">
           <button
             onClick={() => changeView("login")}
-            className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group"
+            className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group cursor-pointer"
           >
             <ArrowLeft
               size={14}

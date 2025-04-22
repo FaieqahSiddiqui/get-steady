@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { login } from "./actions";
 import { AuthView } from "../../constants/types";
+import { toast } from 'react-toastify';
+
 
 type Props = { changeView: (v: AuthView) => void };
 
@@ -46,7 +48,7 @@ const LoginForm = ({ changeView }: Props) => {
 
             <button
             type="button"
-              className="text-primaryBlue text-sm hover:underline"
+              className="text-primaryBlue text-sm hover:underline cursor-pointer"
               onClick={() => changeView("forgot")}
             >
               Forgot password?
@@ -65,7 +67,7 @@ const LoginForm = ({ changeView }: Props) => {
             type="button"
             aria-label="Toggle password visibility"
             onClick={() => setshowPW((prev) => !prev)}
-            className="absolute right-3 top-9.5 text-greyText/60 hover:text-blue-500"
+            className="absolute right-3 top-9.5 text-greyText/60 hover:text-blue-500 cursor-pointer"
           >
             {showPW ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -75,7 +77,7 @@ const LoginForm = ({ changeView }: Props) => {
         <button
         type="submit"
           // formAction={login}
-          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue "
+          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue cursor-pointer"
         >
           Log In
           <ArrowRight></ArrowRight>
@@ -86,7 +88,7 @@ const LoginForm = ({ changeView }: Props) => {
         <div className="flex items-center gap-2 text-sm text-greyText">
           <span>New to GetSteady?</span>
           <button
-            className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group"
+            className="text-primaryBlue hover:underline transition-all inline-flex items-center gap-1 group cursor-pointer"
             onClick={() => changeView("signup")}
           >
             Create an account
