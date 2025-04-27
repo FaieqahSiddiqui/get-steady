@@ -1,13 +1,44 @@
 "use client";
 import React, { useState } from "react";
-import { ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { signup } from "./actions";
 import { AuthView } from "../../constants/types";
+import { toast } from 'react-toastify';
 
 type Props = { newView: (v: AuthView) => void };
 
 const SignupForm = ({ newView }: Props) => {
   const [showPW, setshowPW] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+
+  async function handleSignupSubmit(e:React.FormEvent) {
+      e.preventDefault();
+      setLoading(true);
+  
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
+  
+      try{
+        await signup(formData);
+        // If login is successful, the server action will redirect, so no need to do anything here
+      }
+      catch(err:any){
+        // Suppress the "NEXT_REDIRECT" error
+      if (err.message === "NEXT_REDIRECT") {
+        //ignore
+      }
+      else{
+        toast.error(err.message || "An error occurred while signing up");
+      }
+        
+      }
+      finally{
+        setLoading(false); // Always stop loading no matter what
+      }
+      
+    }
+
 
   return (
     <div>
@@ -17,7 +48,7 @@ const SignupForm = ({ newView }: Props) => {
       </div>
 
       {/* Signup/Login Form */}
-      <form className="space-y-4">
+      <form onSubmit={handleSignupSubmit} className="space-y-4">
         {/* Full Name Label & Input */}
         <div className="space-y-1.5 flex flex-col">
           <label
@@ -83,11 +114,16 @@ const SignupForm = ({ newView }: Props) => {
 
         {/* Login/SignUp button */}
         <button
-          formAction={signup}
-          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue cursor-pointer"
-        >
-          Sign Up
-          <ArrowRight></ArrowRight>
+          // formAction={signup}
+          type="submit"
+          disabled={loading}
+        
+          className={`mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all text-white bg-primaryBlue ${
+            loading ? 'opacity-60' : 'hover:shadow-lg hover:-translate-y-0.5 cursor-pointer'
+          }`}>
+         
+          {loading ? <Loader2 className="w-5 h-5 animate-spin"/>: "Sign Up"}
+          {!loading && <ArrowRight/>}
         </button>
       </form>
 

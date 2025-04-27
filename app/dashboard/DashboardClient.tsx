@@ -23,6 +23,8 @@ const DashboardClient = ({user}:Props) => {
 
     const searchParams = useSearchParams()
     const loginStatus = searchParams.get('login')
+    const signupStatus = searchParams.get('signup');
+    const pwUpdateStatus = searchParams.get('update');
     const toastShown = useRef(false)
 
     // useEffect(() => {
@@ -31,15 +33,25 @@ const DashboardClient = ({user}:Props) => {
 
 
     useEffect(() => {
-        if (loginStatus === 'success' && !toastShown.current) {
-          toast.success('Login successful! 🎉')
-          toastShown.current=true
-          
-          // Clear the query param from the URL
-          const newUrl = window.location.pathname
-          window.history.replaceState({}, '', newUrl)
+    
+      if (!toastShown.current) {
+        if (loginStatus === 'success') {
+          toast.success('Login successful! 🎉');
+          toastShown.current = true;
+        } else if (signupStatus === 'success') {
+          toast.success('Account created! Welcome aboard 👋');
+          toastShown.current = true;
+        } else if (pwUpdateStatus === 'success') {
+          toast.success('Password updated successfully 🔐');
+          toastShown.current = true;
         }
-      }, [loginStatus])
+      
+        if (loginStatus || signupStatus || pwUpdateStatus) {
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, '', newUrl);
+        }
+        }
+      }, [loginStatus,, signupStatus, pwUpdateStatus])
       
 
       if (!user) {

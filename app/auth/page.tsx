@@ -1,17 +1,30 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { Logo } from "../components/Logo";
 import LandingHeader from "../components/LandingHeader";
 import SignupForm from "./components/SignupForm";
 import LoginForm from "./components/LoginForm";
 import ForgotPassword from "./components/ForgotPassword";
 import { AuthView } from "../constants/types";
-
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 
 const page = () => {
   const [activeView, setActiveView] = useState<AuthView>("login");
+  const searchParams = useSearchParams()
+  const logoutStatus = searchParams.get('logout')
+  const toastShown = useRef(false)
 
+useEffect(()=>{
+  if(logoutStatus==='success' && !toastShown.current){
+    toast.success('Logged out successfully. See you soon! 👋')
+    toastShown.current = true
+    // window.history.replaceState({},'','/auth') 
+    window.history.replaceState({}, '', window.location.pathname)
+    //Clean URL
+  }
+},[logoutStatus])
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-heroBgStart to-BG">

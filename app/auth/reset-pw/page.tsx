@@ -1,7 +1,7 @@
 "use client";
 import { Logo } from "@/app/components/Logo";
 import LandingHeader from "@/app/components/LandingHeader";
-import ResetPW from "../components/ResetPW";
+import UpdatePW from "../components/UpdatePW";
 
 
 
@@ -35,7 +35,7 @@ const page = () => {
             </p>
           </div>
 
-          <ResetPW/>
+          <UpdatePW/>
         </div>
 
         

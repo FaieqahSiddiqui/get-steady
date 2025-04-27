@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
       ],
     },
   },
-  
+  reactStrictMode:false
+
 
 };
 

@@ -8,7 +8,7 @@ const ThemeToggle = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    console.log("Theme", theme)
+   
     setMounted(true);
   }, []);
 

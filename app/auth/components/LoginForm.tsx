@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import { login } from "./actions";
 import { AuthView } from "../../constants/types";
 import { toast } from 'react-toastify';
@@ -9,6 +9,34 @@ type Props = { changeView: (v: AuthView) => void };
 
 const LoginForm = ({ changeView }: Props) => {
   const [showPW, setshowPW] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  async function handleLoginSubmit(e:React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    try{
+      await login(formData);
+      // If login is successful, the server action will redirect, so no need to do anything here
+    }
+    catch(err:any){
+      if (err.message === "NEXT_REDIRECT") {
+        //ignore
+      }else{
+        toast.error(err.message || "An error occurred while loggin in");
+      }
+      
+    }
+    finally{
+      setLoading(false); // Always stop loading no matter what
+    }
+    
+  }
+
+  
 
   return (
     <div>
@@ -17,7 +45,8 @@ const LoginForm = ({ changeView }: Props) => {
         <p className="text-greyText">Continue your journey to better habits</p>
       </div>
 
-      <form action={login} className="space-y-4">
+      {/* action={login} */}
+      <form  onSubmit={handleLoginSubmit} className="space-y-4">
         {/* Email Label & Input */}
         <div className="space-y-1.5 flex flex-col">
           <label
@@ -76,11 +105,14 @@ const LoginForm = ({ changeView }: Props) => {
         {/* Login/SignUp button */}
         <button
         type="submit"
+        disabled={loading}
           // formAction={login}
-          className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue cursor-pointer"
+          className={`mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all text-white bg-primaryBlue ${
+            loading ? 'opacity-60' : 'hover:shadow-lg hover:-translate-y-0.5 cursor-pointer'
+          }`}
         >
-          Log In
-          <ArrowRight></ArrowRight>
+          {loading ? <Loader2 className= "w-5 h-5 animate-spin" />: "Log in"}
+          {!loading && <ArrowRight />}
         </button>
       </form>
 

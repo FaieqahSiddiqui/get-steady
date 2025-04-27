@@ -1,53 +1,57 @@
 import { useState } from "react";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import { updatepassword } from "./actions";
-
+import { toast } from "react-toastify";
 
 const ResetPW = () => {
   const [showPW, setshowPW] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
-
-  // function handleSubmit(e: any) {
-  //   const form = e.target;
-  //   const newPassword = form.new_password.value;
-  //   const confirmPassword = form.confirm_password.value;
-  
-  //   if (newPassword !== confirmPassword) {
-  //     e.preventDefault(); // stop the form from submitting
-  //     alert("Passwords do not match");
-  //   }
-   
-  // }
-
+  const [showconfirmPW, setshowconfirmPW] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); // Prevent default form submission
-
+    setLoading(true);
     const form = e.target as HTMLFormElement;
-    const newPassword = (form.elements.namedItem("new_password") as HTMLInputElement).value;
-    const confirmPassword = (form.elements.namedItem("confirm_password") as HTMLInputElement).value;
+    const newPassword = (
+      form.elements.namedItem("new_password") as HTMLInputElement
+    ).value;
+    const confirmPassword = (
+      form.elements.namedItem("confirm_password") as HTMLInputElement
+    ).value;
 
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
+      setLoading(false);
       return;
     }
 
     try {
       // Call the update password function
       await updatepassword(new FormData(form));
-      setSuccess("Password reset successful");
-      setError(''); // Clear any previous errors
+      toast.success("Password reset successful 🔐"); // Show success toast
     } catch (err: any) {
-      setError("An error occurred while resetting your password");
-      setSuccess('');
+    
+      // Suppress the "NEXT_REDIRECT" error
+      if (err.message === "NEXT_REDIRECT") {
+        //ignore
+      }
+      else {
+        toast.error(
+          err.message ?? "An error occurred while resetting your password"
+        );
+      }
+    } finally {
+      setLoading(false); // Always runs after try or catch
     }
   }
-  
+
   return (
     <div>
-      <form onSubmit={handleSubmit} action= {updatepassword} className="space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        // action={updatepassword}
+        className="space-y-4"
+      >
         {/* Password Label & Input */}
         <div className="relative space-y-1.5 flex flex-col">
           <div className="flex justify-between">
@@ -89,7 +93,7 @@ const ResetPW = () => {
           </div>
 
           <input
-            type={showPW ? "text" : "password"}
+            type={showconfirmPW ? "text" : "password"}
             name="confirm_password"
             placeholder="Confirm new password"
             required
@@ -99,20 +103,25 @@ const ResetPW = () => {
           <button
             type="button"
             aria-label="Toggle password visibility"
-            onClick={() => setshowPW((prev) => !prev)}
+            onClick={() => setshowconfirmPW((prev) => !prev)}
             className="absolute right-3 top-9.5 text-greyText/60 hover:text-blue-500 cursor-pointer"
           >
-            {showPW ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showconfirmPW ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
         {/* Login/SignUp button */}
-                <button
-                type="submit"
-                  className="mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all hover:shadow-lg hover:-translate-y-0.5 text-white bg-primaryBlue cursor-pointer "
-                >
-                  Reset Password
-                  <ArrowRight></ArrowRight>
-                </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className={`mt-6 w-full flex justify-center gap-2 p-3 rounded-xl transition-all text-white bg-primaryBlue ${
+            loading
+              ? "opacity-60"
+              : "hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
+          }`}
+        >
+          {loading ? <Loader2 className="w-5 h-5 animate-spin"/>: "Reset Password"}  
+          {!loading && <ArrowRight />}
+        </button>
       </form>
     </div>
   );
