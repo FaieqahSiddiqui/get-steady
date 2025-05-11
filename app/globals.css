@@ -15,6 +15,8 @@
 
   --color-footerBgStart: oklch(0.623 0.214 259.815);
   --color-footerBgEnd:#1447e6;
+  --color-iconHoverBG: #f3f4f6;
+  --color-iconColor: #4a5565;
 }
 
 /* Default light mode (fallback) styles */
@@ -67,6 +69,9 @@
 
   --color-footerBgStart:#1447e6;
   --color-footerBgEnd:#1c398e;
+  --color-iconHoverBG: #1e2939;
+  --color-iconColor: #99a1af;
+  
  
 } 
 
