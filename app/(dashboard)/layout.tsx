@@ -4,7 +4,7 @@ import { createClient } from "@/app/utils/supabase/server";
 //import DashboardHeader from "../(dashboard)/db_components/DashboardHeader";
 //import { User } from "@supabase/auth-js"; // Import the User type from Supabase
 import LayoutWrapper from "./db_components/LayoutWrapper";
-import UserProvider from "../components/UserProvider";
+import UserProvider from "../contexts/UserContext";
 
 type Props = {
   children: ReactNode;

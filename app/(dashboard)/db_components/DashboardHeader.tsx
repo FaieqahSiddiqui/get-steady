@@ -8,7 +8,7 @@ import { User as supabaseUser } from "@supabase/auth-js"; // Import the User typ
 import { Menu, User } from "lucide-react";
 
 import { createClient } from "@/app/utils/supabase/clients";
-import { useUser } from "@/app/components/UserProvider"; // adjust path as needed
+import { useUser } from "@/app/contexts/UserContext"; // adjust path as needed
 
 
 
