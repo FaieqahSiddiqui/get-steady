@@ -2,13 +2,13 @@
 import React from 'react'
 import { useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
-import { signout } from '../auth/components/actions';
+import { signout } from '../../auth/components/actions';
 import { User } from '@supabase/auth-js'; // Import the User type from Supabase
 import { useSearchParams } from 'next/navigation'
-import { useUser } from '../components/UserProvider';
+import { useUser } from '../../contexts/UserContext';
 
 
-import UserProvider from "../components/UserProvider";
+//import UserProvider from "../components/UserProvider";
 
 // type User = {
 //     email: string | undefined;

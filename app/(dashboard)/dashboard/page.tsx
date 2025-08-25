@@ -1,7 +1,7 @@
 import { createClient } from "@/app/utils/supabase/server";
 import DashboardClient from "../db_components/DashboardClient";
 import DashboardLayout from "../layout";
-import { useUser } from "../../components/UserProvider";
+import { useUser } from "../../contexts/UserContext";
 import ToastHandler from "@/app/components/ToastHandler";
 import { redirect } from "next/navigation";
 

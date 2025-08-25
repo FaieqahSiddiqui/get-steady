@@ -1,12 +1,17 @@
 import React from "react";
-import {Rocket, Sparkles } from "lucide-react";
+import { Rocket, Sparkles, EllipsisVertical } from "lucide-react";
 import NewHabitButton from "./habit_components/NewHabitButton";
+import HabitSearchbar from "./habit_components/HabitSearchbar";
+import HabitsGrid from "./habit_components/HabitsGrid";
+
 
 const page = () => {
+  
+
   return (
-    <div>
+    <div className="border-4 border-amber-300 mb-5">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-5 border border-red-500">
         <div>
           <h3 className="text-xl font-semibold">Habits</h3>
           <p className="text-sm text-greyText">
@@ -14,25 +19,13 @@ const page = () => {
           </p>
         </div>
 
-        <NewHabitButton />
+        <NewHabitButton buttonText="New Habit" variant="primary" />
       </div>
 
-      {/* Filter, Tabs & Search */}
-      {/* <div className="flex border border-lightGreyBorder rounded-lg  p-5">
-        <div></div>
-      </div> */}
+      
+      <HabitsGrid />
+       
 
-      {/* Habit Empty State */}
-      <div className="border border-lightGreyBorder bg-iconColor/10 p-12 rounded-lg">
-
-          <div>
-            <Rocket className="size-15 stroke-1 text-primaryBlue"></Rocket>
-            
-          </div>
-
-        <h3 className="font-medium text-lg">Create your First Habit</h3>
-        <p className="text-sm text-greyText">Star by creating a habit that aligns with your desired identity</p>
-      </div>
     </div>
   );
 };
