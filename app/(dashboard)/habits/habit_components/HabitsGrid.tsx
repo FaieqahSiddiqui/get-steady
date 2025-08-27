@@ -1,6 +1,15 @@
-'use client'
-import {useEffect, useMemo, useState} from "react";
-import { EllipsisVertical,Trash2, PenSquare, ArrowDownZA, ArrowDownAZ, Rocket, Sparkles, Loader2} from "lucide-react";
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import {
+  EllipsisVertical,
+  Trash2,
+  PenSquare,
+  ArrowDownZA,
+  ArrowDownAZ,
+  Rocket,
+  Sparkles,
+  Loader2,
+} from "lucide-react";
 // import { createClient } from "@/supabase/server";
 import { useHabits } from "@/app/hooks/useHabit";
 import DeleteHabit from "./DeleteHabit";
@@ -12,10 +21,8 @@ import NewHabitButton from "./NewHabitButton";
 
 //import debounce from "lodash.debounce"
 
-
-
 const HabitsGrid = () => {
-/*  const sampleHabits = [
+  /*  const sampleHabits = [
     {
       id: "1",
       name: "Read for 30 minutes",
@@ -83,61 +90,63 @@ const HabitsGrid = () => {
   */
   //console.log("Rendering HabitsGrid");
 
+  const [showPopup, setShowPopup] = useState(false);
+  const [showHabitModal, setShowHabitModal] = useState(false);
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [habitsPerPage, setHabitsPerPage] = useState<number>(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [showHabitModal, setShowHabitModal] = useState(false);
-    const [selectedHabit, setSelectedHabit] = useState<Habit|null>(null); 
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');  
-    const [habitsPerPage, setHabitsPerPage] = useState<number>(5);
-    const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
-    const [searchTerm, setSearchTerm]= useState("");
-    
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setHabitsPerPage(Number(e.target.value));
+  };
 
+  // const debouncedSetSearchTerm = useMemo(
+  //   () =>
+  //     debounce((val: string) => {
+  //       setSearchTerm(val);
+  //     }, 300), //wait 300ms
+  //   []
+  // );
 
-    const handleSelectChange=(e: React.ChangeEvent<HTMLSelectElement>)=>
-    { 
-      setHabitsPerPage(Number(e.target.value));
-    }
+  // //cleanup on unmount to avoid memory leak/ late call
+  // useEffect(()=>{
+  //   return () =>{
+  //     debouncedSetSearchTerm.cancel();
+  //   };
+  // }, [debouncedSetSearchTerm]);
 
+  const { habits, loading, error, totalHabits, fetchHabits } = useHabits(
+    "name",
+    sortOrder,
+    habitsPerPage,
+    currentPage,
+    searchTerm
+  ); //sorting
+  const totalPages = Math.ceil(totalHabits / habitsPerPage);
+  console.log("habits.length: ", habits.length);
 
-    // const debouncedSetSearchTerm = useMemo(
-    //   () =>
-    //     debounce((val: string) => {
-    //       setSearchTerm(val);
-    //     }, 300), //wait 300ms
-    //   []
-    // );
-
-    // //cleanup on unmount to avoid memory leak/ late call
-    // useEffect(()=>{
-    //   return () =>{
-    //     debouncedSetSearchTerm.cancel();
-    //   };
-    // }, [debouncedSetSearchTerm]);
-
-
-    const {habits, loading, error, totalHabits , fetchHabits} = useHabits('name', sortOrder, habitsPerPage, currentPage, searchTerm); //sorting
-    const totalPages= Math.ceil(totalHabits/habitsPerPage);
- console.log("habits.length: ", habits.length);
- 
-    if (process.env.NODE_ENV === "development") {
-      console.log("My Supabase habits:", habits);
-      console.log("total Habits",totalHabits,
-        "total Pages",totalPages,
-        "habits per page",habitsPerPage);
-     
-    }
-    
-    
-    
+  if (process.env.NODE_ENV === "development") {
+    console.log("My Supabase habits:", habits);
+    console.log(
+      "total Habits",
+      totalHabits,
+      "total Pages",
+      totalPages,
+      "habits per page",
+      habitsPerPage
+    );
+  }
 
   return (
-    <div className="border border-lightGreyBorder bg-BG/30  rounded-lg flex flex-col justify-center items-center">
+    <div className="border border-lightGreyBorder bg-BG/30  rounded-lg flex flex-col justify-center items-center h-[70vh] nm:h-[80vh]">
       {/* Filter, Tabs & Search */}
 
-      <div className="flex justify-between items-center  bg-BG/30 border  border-lightGreyBorder   py-2 px-4 mb-3 w-full">
-        <div>
+      <div className="flex justify-between items-center bg-BG/30 border border-lightGreyBorder py-2 px-4 mb-3 w-full">
+        
+        <div className="w-full sm:w-64 md:w-80">
           {/* <HabitSearchbar searchQuery={searchTerm} onSearchChange={(val) => {debouncedSetSearchTerm(val); setCurrentPage(1);}}/> */}
 
           <HabitSearchbar
@@ -150,17 +159,17 @@ const HabitsGrid = () => {
         </div>
 
         {/* Setting Items per page */}
-        <div className="flex gap-2 border border-pink-600">
+        <div className="flex gap-2 items-center">
           <label
             htmlFor="items_per_page"
-            className="border border-amber-300 w-fit text-sm"
+            className="text-sm font-light text-greyText"
           >
             Items per page
           </label>
           <select
             name="per_page"
             id="items_per_page"
-            className="border border-amber-900"
+            className="border border-lightGreyBorder rounded-md bg-BG px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
             onChange={handleSelectChange}
             value={habitsPerPage}
           >
@@ -204,17 +213,20 @@ const HabitsGrid = () => {
 
       {/* Habit Rows */}
 
-    <div className={`w-full h-[50vh] ${loading || totalHabits===0 ? "overflow-hidden" : "overflow-auto"} `}>
-        
+      <div
+        // className={`w-full h-[50vh] ${
+        //   loading || totalHabits === 0 ? "overflow-hidden" : "overflow-auto"
+        // } `}
+
+        className="w-full flex-1 overflow-auto"
+      >
         {/* ✅ Loading */}
         {loading && (
-            <div className="flex items-center h-full justify-center  overflow-hidden ">
-              {/* Loading habits... */}
-              <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
-            </div>
-          )}
-       
-
+          <div className="flex items-center h-full justify-center  overflow-hidden ">
+            {/* Loading habits... */}
+            <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+          </div>
+        )}
 
         {/* ✅ Empty state */}
 
@@ -238,49 +250,42 @@ const HabitsGrid = () => {
         )}
 
         {/* ✅ Rows */}
-        {!loading && totalHabits>0 && (
-        <>
-        {habits.map((habit) => (
-          <div
-            key={habit.id}
-            className="border grid grid-cols-12 gap-4 p-3 w-full border-b border-lightGreyBorder items-center"
-          >
-            <div className="border col-span-5">{habit.name}</div>
-            <div className="border col-span-2">{habit.frequency}</div>
-            <div className="border col-span-2">{habit.progress}%</div>
-            <div className="border col-span-2">{habit.streak} days</div>
-            <div className="border col-span-1 justify-end">
-              {/* <EllipsisVertical className="size-5 border border-amber-300" /> */}
-              <div className="flex gap-2">
-                <Trash2
-                  className="size-5 border border-amber-300 cursor-pointer"
-                  onClick={() => {
-                    setSelectedHabit(habit); // 👈 store habit
-                    setShowPopup(true);
-                  }}
-                />
-                <PenSquare
-                  onClick={() => {
-                    setSelectedHabit(habit);
-                    setShowHabitModal(true);
-                  }}
-                  className="size-5 border border-amber-300 cursor-pointer"
-                />
+        {!loading && totalHabits > 0 && (
+          <>
+            {habits.map((habit) => (
+              <div
+                key={habit.id}
+                className="border grid grid-cols-12 gap-4 p-3 w-full border-b border-lightGreyBorder items-center"
+              >
+                <div className="border col-span-5">{habit.name}</div>
+                <div className="border col-span-2">{habit.frequency}</div>
+                <div className="border col-span-2">{habit.progress}%</div>
+                <div className="border col-span-2">{habit.streak} days</div>
+                <div className="border col-span-1 justify-end">
+                  {/* <EllipsisVertical className="size-5 border border-amber-300" /> */}
+                  <div className="flex gap-2">
+                    <Trash2
+                      className="size-5 border border-amber-300 cursor-pointer"
+                      onClick={() => {
+                        setSelectedHabit(habit); // 👈 store habit
+                        setShowPopup(true);
+                      }}
+                    />
+                    <PenSquare
+                      onClick={() => {
+                        setSelectedHabit(habit);
+                        setShowHabitModal(true);
+                      }}
+                      className="size-5 border border-amber-300 cursor-pointer"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-        </>)}
-
-        {/* Pagination */}
-
-        {totalHabits > habitsPerPage && (
-          <Paginator
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+            ))}
+          </>
         )}
+
+        
       </div>
 
       <DeleteHabit
@@ -297,6 +302,18 @@ const HabitsGrid = () => {
         }}
         initialHabit={selectedHabit}
       ></HabitFormModal>
+
+      {/* Pagination */}
+
+        {totalHabits > habitsPerPage && (
+          <div className="p-2">
+          <Paginator
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+          </div>
+        )}
     </div>
   );
 };

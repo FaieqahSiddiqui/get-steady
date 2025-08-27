@@ -15,6 +15,9 @@ export default {
         'secondaryBlue': '#022859',
         'custom-border': '#000000', // Add your custom border color
       },
+      screens: {
+      nm: "1281px" //above normal screen 1280px
+    },
     },
   },
   plugins: [],
