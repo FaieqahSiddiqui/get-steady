@@ -8,7 +8,8 @@ export const useHabits = (
         sortOrder: 'asc' | 'desc' = 'asc',   // default ascending order
         limit:number = 5,
         pageNumber:number = 1,
-        searchTerm: string=""
+        searchTerm: string="",
+        category: string =""
 
 )=>{
     const [habits, setHabits] = useState<Habit[]>([]);
@@ -33,6 +34,11 @@ export const useHabits = (
         const to = from + (limit-1)
 
         let query = supabase.from('Habit').select('*', {count: 'exact'}).order(sortBy, {ascending:sortOrder === 'asc'}).range(from,to);
+
+        // Case-insensitive partial match for category
+        if (category.trim() !== "" &&  category!=="All") {
+          query = query.ilike('category', `%${category}%`);
+        }
 
         if(searchTerm.trim() !==""){
           query=query.ilike('name',`%${searchTerm}%`)
@@ -71,7 +77,7 @@ export const useHabits = (
       return () => {
         window.removeEventListener("habits-updated", handleHabitsUpdated);
       };
-    }, [sortOrder, limit, pageNumber, searchTerm]);
+    }, [sortOrder, limit, pageNumber, searchTerm, category]);
 
     return {habits, loading, error, totalHabits, fetchHabits};
 

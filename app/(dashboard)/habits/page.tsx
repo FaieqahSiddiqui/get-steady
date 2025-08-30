@@ -9,9 +9,9 @@ const page = () => {
   
 
   return (
-    <div className="border-4 border-amber-300 mb-5">
+    <div className=" mb-5">
       {/* Header */}
-      <div className="flex justify-between items-center mb-5 border border-red-500">
+      <div className="flex justify-between items-center mb-5 ">
         <div>
           <h3 className="text-xl font-semibold">Habits</h3>
           <p className="text-sm text-greyText">
