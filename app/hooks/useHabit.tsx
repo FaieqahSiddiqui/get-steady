@@ -9,7 +9,8 @@ export const useHabits = (
         limit:number = 5,
         pageNumber:number = 1,
         searchTerm: string="",
-        category: string =""
+        category: string ="",
+        frequency: string=""
 
 )=>{
     const [habits, setHabits] = useState<Habit[]>([]);
@@ -38,6 +39,11 @@ export const useHabits = (
         // Case-insensitive partial match for category
         if (category.trim() !== "" &&  category!=="All") {
           query = query.ilike('category', `%${category}%`);
+        }
+
+        // Case-insensitive partial match for category
+        if (frequency.trim() !== "" &&  frequency!=="All") {
+          query = query.ilike('frequency', `%${frequency}%`);
         }
 
         if(searchTerm.trim() !==""){
@@ -77,7 +83,7 @@ export const useHabits = (
       return () => {
         window.removeEventListener("habits-updated", handleHabitsUpdated);
       };
-    }, [sortOrder, limit, pageNumber, searchTerm, category]);
+    }, [sortOrder, limit, pageNumber, searchTerm, category, frequency]);
 
     return {habits, loading, error, totalHabits, fetchHabits};
 

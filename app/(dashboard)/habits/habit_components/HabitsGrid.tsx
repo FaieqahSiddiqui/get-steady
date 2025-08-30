@@ -19,6 +19,8 @@ import HabitSearchbar from "../habit_components/HabitSearchbar";
 import Paginator from "./Paginator";
 import NewHabitButton from "./NewHabitButton";
 import HabitEllipsesMenu from "./HabitEllipsesMenu";
+import HabitDatePicker from "./HabitDatePicker";
+import LogHabit from "./LogHabit";
 
 //import debounce from "lodash.debounce"
 
@@ -98,10 +100,13 @@ const HabitsGrid = () => {
   const [habitsPerPage, setHabitsPerPage] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState("All");
+  const [frequencyFilter, setFrequencyFilter] = useState("All");
+
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const defaultCategories = ["All","Study", "Health", "Learning", "Other"];
+  const defaultCategories = ["All", "Study", "Health", "Learning", "Other"];
+  const defaultFrequency = ["All","Daily", "Weekly", "Monthly"];
 
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -114,7 +119,8 @@ const HabitsGrid = () => {
     habitsPerPage,
     currentPage,
     searchTerm,
-    categoryFilter
+    categoryFilter,
+    frequencyFilter
   ); //sorting
   const totalPages = Math.ceil(totalHabits / habitsPerPage);
   console.log("habits.length: ", habits.length);
@@ -132,10 +138,12 @@ const HabitsGrid = () => {
   }
 
   return (
-    <div className="border border-lightGreyBorder bg-BG/30 rounded-xl flex flex-col justify-center items-center h-[70vh] nm:h-[80vh] "> 
+    <div className="border border-lightGreyBorder bg-BG/30 rounded-xl flex flex-col justify-center items-center h-[70vh] nm:h-[80vh] ">
       {/* Filter, Tabs & Search */}
 
-      <div className="flex justify-between items-center bg-BG/30  p-3  w-full"> {/* mb-3 border border-lightGreyBorder*/}
+      <div className="flex justify-between items-center bg-BG/30  p-3  w-full">
+        {" "}
+        {/* mb-3 border border-lightGreyBorder*/}
         <div className="w-full sm:w-64 md:w-80">
           {/* <HabitSearchbar searchQuery={searchTerm} onSearchChange={(val) => {debouncedSetSearchTerm(val); setCurrentPage(1);}}/> */}
 
@@ -148,35 +156,68 @@ const HabitsGrid = () => {
           />
         </div>
 
-        {/* Category Filter */}
+        <div className="flex gap-5">
 
-        <div className="flex gap-2 items-center">
-          <label
-            htmlFor="category_filter"
-            className="text-sm font-light text-greyText"
-          >
-            Category
-          </label>
-          <select
-            name="category"
-            id="category_filter"
-            className="border border-lightGreyBorder rounded-md bg-BG px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            value={categoryFilter}
-          >
-            {defaultCategories.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
+
+          {/* Frequency Filter */}
+          <div className="flex gap-2 items-center">
+            <label
+              htmlFor="frequency_filter"
+              className="text-sm font-light text-greyText"
+            >
+              Frequency
+            </label>
+            <select
+              name="frequency"
+              id="frequency_filter"
+              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+              onChange={(e) => setFrequencyFilter(e.target.value)}
+              value={frequencyFilter}
+            >
+              {defaultFrequency.map((f) => (
+                <option key={f}>{f}</option>
+              ))}
+            </select>
+          </div>
+
+
+
+
+          {/* Category Filter */}
+          <div className="flex gap-2 items-center">
+            <label
+              htmlFor="category_filter"
+              className="text-sm font-light text-greyText"
+            >
+              Category
+            </label>
+            <select
+              name="category"
+              id="category_filter"
+              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              value={categoryFilter}
+            >
+              {defaultCategories.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+
+
+          
+
+          <div className="">
+            <HabitDatePicker></HabitDatePicker>
+          </div>
+
         </div>
-
-        {/* Items per page code was here*/}
       </div>
 
       {/* Habit Grid */}
 
       <div className=" grid grid-cols-12 gap-4 py-4 px-2 border-t border-b  border-b-lightGreyBorder border-t-lightGreyBorder text-sm font-medium text-greyText w-full bg-BG pr-6 ">
-       
         {/* Headers */}
         <div className=" col-span-5 flex gap-3 items-center font-semibold ">
           {sortOrder === "asc" ? (
@@ -267,7 +308,6 @@ const HabitsGrid = () => {
                 {/* Actions */}
 
                 <div className="flex col-span-1 justify-center">
-                 
                   <div className=" flex items-center justify-center  md:hidden">
                     <HabitEllipsesMenu
                       onEdit={(habit) => {
@@ -281,15 +321,11 @@ const HabitsGrid = () => {
                       habit={habit}
                     />
                   </div>
-                  {}
+                  
                   <div className=" gap-2 hidden md:flex">
-                    <Trash2
-                      className="size-5 stroke-1 hover:stroke-2 text-red-500 cursor-pointer"
-                      onClick={() => {
-                        setSelectedHabit(habit); // 👈 store habit
-                        setShowPopup(true);
-                      }}
-                    />
+
+                    {/* <LogHabit/> */}
+
                     <PenSquare
                       onClick={() => {
                         setSelectedHabit(habit);
@@ -297,6 +333,14 @@ const HabitsGrid = () => {
                       }}
                       className="size-5 stroke-1 hover:stroke-2 text-greyText  cursor-pointer"
                     />
+                    <Trash2
+                      className="size-5 stroke-1 hover:stroke-2 text-red-500 cursor-pointer"
+                      onClick={() => {
+                        setSelectedHabit(habit); // 👈 store habit
+                        setShowPopup(true);
+                      }}
+                    />
+                    
                   </div>
                 </div>
               </div>
@@ -319,8 +363,6 @@ const HabitsGrid = () => {
         }}
         initialHabit={selectedHabit}
       ></HabitFormModal>
-
-
 
       <div className="w-full relative flex items-center justify-center min-h-[48px] ">
         {/* Pagination */}
@@ -357,8 +399,6 @@ const HabitsGrid = () => {
           </select>
         </div>
       </div>
-      
-
     </div>
   );
 };
