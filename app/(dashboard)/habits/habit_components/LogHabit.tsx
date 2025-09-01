@@ -2,6 +2,7 @@ import React from "react";
 import { CircleCheckBig } from "lucide-react";
 import { supabase } from "@/app/utils/supabase/createClient";
 import { Habit } from "@/app/constants/types";
+import { toast } from "react-toastify";
 
 
 
@@ -56,16 +57,78 @@ const LogHabit = ({habit,selectedDate}:HabitLogProps) => {
 //       }
 
     const handleHabitLog=async()=>{
-        if (!habit) return;
-        const {data, error} = await supabase.from("HabitLog").insert([
-            {habit:habit, complete:true, date:selectedDate }
-        ])
+        // if (!habit) return;
+        // const {data, error} = await supabase.from("HabitLog").insert([
+        //     {habit_id:habit.id, completed:true, date:selectedDate },
+        // ]);
+
+        // if(error){
+        //     toast.error("Failed to log habit: "+ error.message);
+        //     return
+        // }
+        // else{
+        //     toast.success("Habit Logged successfully!");
+        // }
 
 
+
+        try{
+            if(!habit || !selectedDate) return;
+
+            const {data: userData, error: userError} = await supabase.auth.getUser();
+            if(userError || !userData.user){
+                toast.error("You must be logged in to proceed");
+                return;
+            }
+            const user = userData.user;
+
+
+            //1. check current state
+            const {data:existing, error: fetchError} = await supabase
+            .from("HabitLog")
+            .select("id, completed")
+            .eq("habit_id", habit.id)
+            .eq("user", user.id)
+            .eq("date", selectedDate)
+            .maybeSingle();
+
+
+            if (fetchError) throw fetchError;
+
+            //2 Upsert Log(insert or update)
+
+            const {error:upsertError} = await supabase
+            .from("HabitLog")
+            .upsert([
+                {
+                  id:existing?.id, //if log exists, update it   
+                  habit_id: habit.id,
+                  user: user.id,
+                  date: selectedDate,
+                  completed: existing? !existing.completed:true,
+                },
+            ],
+            {onConflict: "habit_id, user, date"}
+
+            );
+
+
+            if(upsertError) throw upsertError;
+
+            toast.success(
+                existing ?`Habit marked as ${!existing.completed ? "completed" : "not completed"}`: "Habit Logged successfully!"
+                
+            );
+
+        }
+        catch(err:any){
+            toast.error("Unexpected error: "+ err.message);
+        }
 
     }
   return (
-    <CircleCheckBig className="size-5 stroke-1 hover:stroke-2 text-greyText  cursor-pointer" />
+    <CircleCheckBig className="size-5 stroke-1 hover:stroke-2 text-greyText  cursor-pointer" 
+    onClick={handleHabitLog}/>
   );
 };
 

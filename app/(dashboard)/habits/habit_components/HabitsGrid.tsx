@@ -101,6 +101,7 @@ const HabitsGrid = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [frequencyFilter, setFrequencyFilter] = useState("All");
+  const [selectedDate, setSelectedDate] = useState<Date|null>(new Date());
 
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -209,7 +210,7 @@ const HabitsGrid = () => {
           
 
           <div className="">
-            <HabitDatePicker></HabitDatePicker>
+            <HabitDatePicker selectedDate={selectedDate} onDateChange={setSelectedDate}></HabitDatePicker>
           </div>
 
         </div>
@@ -324,7 +325,7 @@ const HabitsGrid = () => {
                   
                   <div className=" gap-2 hidden md:flex">
 
-                    {/* <LogHabit/> */}
+                    <LogHabit  habit={habit} selectedDate={selectedDate}/>
 
                     <PenSquare
                       onClick={() => {

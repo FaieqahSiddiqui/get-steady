@@ -5,15 +5,21 @@ import {ChevronLeft, ChevronRight, Calendar1} from "lucide-react";
 
 
 
-const HabitDatePicker = () => {
+type DatePickerProps={
+  selectedDate: Date|null;
+  onDateChange: (date: Date|null)=> void;
+}
 
-  const [selectedDate, setSelectedDate]= useState<Date|null>(new Date());
+const HabitDatePicker = ({selectedDate, onDateChange}:DatePickerProps) => {
+
+  //const [selectedDate, setSelectedDate]= useState<Date|null>(new Date());
 // Function to go to previous month
+
   const goToPrevDay = () => {
     if (selectedDate) {
       const newDate = new Date(selectedDate);
       newDate.setDate(newDate.getDate() - 1); // Go back one day
-      setSelectedDate(newDate);
+      onDateChange(newDate);
     }
   };
 
@@ -22,7 +28,7 @@ const HabitDatePicker = () => {
     if (selectedDate) {
       const newDate = new Date(selectedDate);
       newDate.setDate(newDate.getDate() + 1); // Go forward one day
-      setSelectedDate(newDate);
+      onDateChange(newDate);
     }
   };
 
@@ -46,7 +52,7 @@ const HabitDatePicker = () => {
           <div className='relative '>
             <DatePicker
             selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)} // Allow null in the onChange handler
+            onChange={(date) => onDateChange(date)} // Allow null in the onChange handler
             className="p-1 pl-5 border text-center border-lightGreyBorder bg-BG rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             dateFormat="MMMM d, yyyy"
             placeholderText="Select a date"
