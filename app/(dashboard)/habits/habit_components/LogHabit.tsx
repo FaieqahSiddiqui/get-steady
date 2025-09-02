@@ -6,12 +6,14 @@ import { toast } from "react-toastify";
 
 
 
+
 type HabitLogProps={
     habit:Habit|null;
     selectedDate: Date|null;
+    isLogged: boolean;
 
 }
-const LogHabit = ({habit,selectedDate}:HabitLogProps) => {
+const LogHabit = ({habit,selectedDate,isLogged}:HabitLogProps) => {
 
 
 // const handleDelete = async () => {
@@ -81,6 +83,9 @@ const LogHabit = ({habit,selectedDate}:HabitLogProps) => {
                 return;
             }
             const user = userData.user;
+            //const dateString = selectedDate.toLocaleDateString("en-CA"); 
+            const dateString = selectedDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
+
 
 
             //1. check current state
@@ -89,7 +94,7 @@ const LogHabit = ({habit,selectedDate}:HabitLogProps) => {
             .select("id, completed")
             .eq("habit_id", habit.id)
             .eq("user", user.id)
-            .eq("date", selectedDate)
+            .eq("date", dateString)
             .maybeSingle();
 
 
@@ -101,10 +106,10 @@ const LogHabit = ({habit,selectedDate}:HabitLogProps) => {
             .from("HabitLog")
             .upsert([
                 {
-                  id:existing?.id, //if log exists, update it   
+                  //id:existing?.id, //if log exists, update it   
                   habit_id: habit.id,
                   user: user.id,
-                  date: selectedDate,
+                  date: dateString,
                   completed: existing? !existing.completed:true,
                 },
             ],
@@ -112,6 +117,8 @@ const LogHabit = ({habit,selectedDate}:HabitLogProps) => {
 
             );
 
+            //Dispatch a custom event
+    window.dispatchEvent(new Event("habit-logged"));
 
             if(upsertError) throw upsertError;
 
@@ -127,7 +134,7 @@ const LogHabit = ({habit,selectedDate}:HabitLogProps) => {
 
     }
   return (
-    <CircleCheckBig className="size-5 stroke-1 hover:stroke-2 text-greyText  cursor-pointer" 
+    <CircleCheckBig className={`size-5 stroke-1 hover:stroke-2 cursor-pointer ${isLogged ? "text-green-500" : "text-greyText"}`}
     onClick={handleHabitLog}/>
   );
 };

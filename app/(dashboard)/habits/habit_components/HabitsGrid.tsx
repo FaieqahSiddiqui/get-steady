@@ -13,7 +13,7 @@ import {
 // import { createClient } from "@/supabase/server";
 import { useHabits } from "@/app/hooks/useHabit";
 import DeleteHabit from "./DeleteHabit";
-import { Habit } from "../../../constants/types";
+import { Habit, HabitWithLogs } from "../../../constants/types";
 import HabitFormModal from "./HabitFormModal";
 import HabitSearchbar from "../habit_components/HabitSearchbar";
 import Paginator from "./Paginator";
@@ -121,7 +121,8 @@ const HabitsGrid = () => {
     currentPage,
     searchTerm,
     categoryFilter,
-    frequencyFilter
+    frequencyFilter,
+    selectedDate
   ); //sorting
   const totalPages = Math.ceil(totalHabits / habitsPerPage);
   console.log("habits.length: ", habits.length);
@@ -287,7 +288,17 @@ const HabitsGrid = () => {
         {/* ✅ Rows */}
         {!loading && totalHabits > 0 && (
           <>
-            {habits.map((habit) => (
+          {console.log("Selected Date:", selectedDate)}
+
+            {habits.map((habit) => {
+              const isLogged = habit.HabitLog && habit.HabitLog.length>0
+              
+              console.log("HabitLog raw:", habit.HabitLog)
+
+
+
+              
+              return(
               <div
                 key={habit.id}
                 className="grid grid-cols-12 gap-4 px-2 py-3 w-full border-b border-lightGreyBorder items-center hover:bg-lightGreyBorder/30"
@@ -325,7 +336,7 @@ const HabitsGrid = () => {
                   
                   <div className=" gap-2 hidden md:flex">
 
-                    <LogHabit  habit={habit} selectedDate={selectedDate}/>
+                    <LogHabit  habit={habit} selectedDate={selectedDate} isLogged={isLogged}/>
 
                     <PenSquare
                       onClick={() => {
@@ -344,8 +355,8 @@ const HabitsGrid = () => {
                     
                   </div>
                 </div>
-              </div>
-            ))}
+              </div>)
+})}
           </>
         )}
       </div>

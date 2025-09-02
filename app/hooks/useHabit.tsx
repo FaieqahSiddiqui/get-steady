@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState } from "react";
-import { createClient } from "@/supabase/clients"; // This should return the browser-side supabase client
-import { Habit } from "../constants/types";
+//import { createClient } from "@/supabase/clients"; // This should return the browser-side supabase client
+import { Habit,HabitWithLogs } from "../constants/types";
+import { supabase } from "@/app/utils/supabase/createClient";
+
 
 export const useHabits = (
         sortBy: keyof Habit = 'name', // default sort by name not`created_at`
@@ -10,10 +12,12 @@ export const useHabits = (
         pageNumber:number = 1,
         searchTerm: string="",
         category: string ="",
-        frequency: string=""
+        frequency: string="",
+        selectedDate: Date | null
 
 )=>{
-    const [habits, setHabits] = useState<Habit[]>([]);
+    //const [habits, setHabits] = useState<Habit[]>([]);
+    const [habits, setHabits] = useState<HabitWithLogs[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError]= useState<string | null>(null);
     const [totalHabits, setTotalHabits]= useState(0);
@@ -26,7 +30,7 @@ export const useHabits = (
       setLoading(true);
       setError(null);
 
-        const supabase = createClient();
+        //const supabase = createClient();
 
         //console.log("Supabase client:", supabase);
         //console.log("Habits per page in the hook: ",limit);
@@ -34,8 +38,23 @@ export const useHabits = (
         const from = (pageNumber-1) * limit;
         const to = from + (limit-1)
 
-        let query = supabase.from('Habit').select('*', {count: 'exact'}).order(sortBy, {ascending:sortOrder === 'asc'}).range(from,to);
 
+        //***********MAIN QUERY BEFORE HABIT LOG JOIN************
+        //let query = supabase.from('Habit').select('*', {count: 'exact'}).order(sortBy, {ascending:sortOrder === 'asc'}).range(from,to);
+
+
+        let query = supabase.from('Habit').select(
+          `*,
+          HabitLog(
+            id,
+            date,
+            completed
+          )`,{count:'exact'}).order(sortBy,{ascending:sortOrder==='asc'}).range(from,to);
+
+          if(selectedDate){
+            const formattedDate = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD
+            query = query.eq('HabitLog.date',formattedDate);
+          }
         // Case-insensitive partial match for category
         if (category.trim() !== "" &&  category!=="All") {
           query = query.ilike('category', `%${category}%`);
@@ -52,9 +71,7 @@ export const useHabits = (
 
         const {data,count,error}= await query;
 
-        // const {data,count, error} = await supabase.from('Habit').select('*', {count: 'exact'}).order(sortBy, {ascending:sortOrder === 'asc'}).range(from,to);
-        //range(0,limit-1)
-        //const {count, error: countError} = await supabase.from('Habit').select('*',{count:'exact', head:true})
+       
 
         //console.log("Supabase returned:", { data, error });
 
@@ -65,7 +82,7 @@ export const useHabits = (
         else{
             setHabits(data);
             setTotalHabits(count||0);
-            //console.log("Hook Habits: ",data);
+            console.log("Hook Habits: ",data);
         }
         setLoading(false);
     }
@@ -77,13 +94,22 @@ export const useHabits = (
         //console.log("Habit created event detected");
         fetchHabits();
       };
+      const handleHabitLogged = () => {
+        //console.log("Habit created event detected");
+        fetchHabits();
+      };
 
       window.addEventListener("habits-updated", handleHabitsUpdated);
+      window.addEventListener("habit-logged", handleHabitLogged);
+
+
 
       return () => {
         window.removeEventListener("habits-updated", handleHabitsUpdated);
+        window.removeEventListener("habit-logged", handleHabitLogged);
+
       };
-    }, [sortOrder, limit, pageNumber, searchTerm, category, frequency]);
+    }, [sortOrder, limit, pageNumber, searchTerm, category, frequency, selectedDate]);
 
     return {habits, loading, error, totalHabits, fetchHabits};
 
