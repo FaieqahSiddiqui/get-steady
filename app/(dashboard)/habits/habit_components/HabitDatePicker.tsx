@@ -12,17 +12,10 @@ type DatePickerProps={
 
 const HabitDatePicker = ({selectedDate, onDateChange}:DatePickerProps) => {
 
-  //const [selectedDate, setSelectedDate]= useState<Date|null>(new Date());
-// Function to go to previous month
-
   const goToPrevDay = () => {
     if (selectedDate) {
       const newDate = new Date(selectedDate);
       newDate.setDate(newDate.getDate() - 1); // Go back one day
-            console.log("Current Date:", newDate);
-                                    console.log("Current Date Type:", typeof(newDate));
-
-
       onDateChange(newDate);
 
     }
@@ -33,10 +26,6 @@ const HabitDatePicker = ({selectedDate, onDateChange}:DatePickerProps) => {
     if (selectedDate) {
       const newDate = new Date(selectedDate);
       newDate.setDate(newDate.getDate() + 1); // Go forward one day
-            console.log("Current Date:", newDate);
-                        console.log("Current Date Type:", typeof(newDate));
-
-
       onDateChange(newDate);
 
     }

@@ -13,7 +13,9 @@ export const useHabits = (
         searchTerm: string="",
         category: string ="",
         frequency: string="",
-        selectedDate: Date | null
+        selectedDate: Date | null,
+        completed: boolean | null = null   
+
 
 )=>{
     //const [habits, setHabits] = useState<Habit[]>([]);
@@ -23,6 +25,10 @@ export const useHabits = (
     const [totalHabits, setTotalHabits]= useState(0);
 
     console.log("useHabits hook called");
+    console.log("Selected DDATEE Normal:", selectedDate)
+
+    //console.log("Selected DDATEE hook Formatted:", selectedDate?.toISOString().split("T")[0])
+    console.log("Selected DDATEE hook Formatted:", selectedDate?.toLocaleDateString("en-CA"))
 
 
     const fetchHabits = async () =>{
@@ -45,14 +51,30 @@ export const useHabits = (
 
         let query = supabase.from('Habit').select(
           `*,
-          HabitLog(
+          HabitLog${completed ==true ? "!inner": ""}(
             id,
             date,
             completed
           )`,{count:'exact'}).order(sortBy,{ascending:sortOrder==='asc'}).range(from,to);
 
+
+// if (completed !== null) {
+//       query = query.eq("HabitLog.completed", completed);
+//     }
+
+// ✅ Completed = true → only habits with at least one completed log
+    if (completed === true) {
+      query = query.eq("HabitLog.completed", true);
+    }
+
+    // ✅ Completed = false → habits with uncompleted log OR no log at all
+    else if (completed === false) {
+      query = query.or("HabitLog.completed.eq.false,HabitLog.id.is.null");
+    }
+
           if(selectedDate){
-            const formattedDate = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD
+            //const formattedDate = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD
+            const formattedDate = selectedDate.toLocaleDateString("en-CA"); 
             query = query.eq('HabitLog.date',formattedDate);
           }
         // Case-insensitive partial match for category
@@ -109,7 +131,7 @@ export const useHabits = (
         window.removeEventListener("habit-logged", handleHabitLogged);
 
       };
-    }, [sortOrder, limit, pageNumber, searchTerm, category, frequency, selectedDate]);
+    }, [sortOrder, limit, pageNumber, searchTerm, category, frequency, selectedDate, completed]);
 
     return {habits, loading, error, totalHabits, fetchHabits};
 

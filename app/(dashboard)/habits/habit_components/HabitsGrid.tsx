@@ -93,6 +93,15 @@ const HabitsGrid = () => {
   */
   //console.log("Rendering HabitsGrid");
 
+
+const defaultCategories = ["All", "Study", "Health", "Learning", "Other"];
+const defaultFrequency = ["All", "Daily", "Weekly", "Monthly"];
+const defaultStatuses = [
+  { label: "All", value: null },
+  { label: "Completed", value: true },
+  { label: "Incomplete", value: false },
+];
+
   const [showPopup, setShowPopup] = useState(false);
   const [showHabitModal, setShowHabitModal] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
@@ -101,13 +110,12 @@ const HabitsGrid = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [frequencyFilter, setFrequencyFilter] = useState("All");
-  const [selectedDate, setSelectedDate] = useState<Date|null>(new Date());
-
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [habitStatusFilter, setHabitStatusFilter]=useState(defaultStatuses[0]);
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const defaultCategories = ["All", "Study", "Health", "Learning", "Other"];
-  const defaultFrequency = ["All","Daily", "Weekly", "Monthly"];
+  
 
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -122,7 +130,8 @@ const HabitsGrid = () => {
     searchTerm,
     categoryFilter,
     frequencyFilter,
-    selectedDate
+    selectedDate,
+    habitStatusFilter.value //(null | true | false)
   ); //sorting
   const totalPages = Math.ceil(totalHabits / habitsPerPage);
   console.log("habits.length: ", habits.length);
@@ -147,7 +156,6 @@ const HabitsGrid = () => {
         {" "}
         {/* mb-3 border border-lightGreyBorder*/}
         <div className="w-full sm:w-64 md:w-80">
-          {/* <HabitSearchbar searchQuery={searchTerm} onSearchChange={(val) => {debouncedSetSearchTerm(val); setCurrentPage(1);}}/> */}
 
           <HabitSearchbar
             searchQuery={searchTerm}
@@ -157,10 +165,7 @@ const HabitsGrid = () => {
             }}
           />
         </div>
-
         <div className="flex gap-5">
-
-
           {/* Frequency Filter */}
           <div className="flex gap-2 items-center">
             <label
@@ -181,9 +186,6 @@ const HabitsGrid = () => {
               ))}
             </select>
           </div>
-
-
-
 
           {/* Category Filter */}
           <div className="flex gap-2 items-center">
@@ -206,14 +208,35 @@ const HabitsGrid = () => {
             </select>
           </div>
 
-
-
-          
-
-          <div className="">
-            <HabitDatePicker selectedDate={selectedDate} onDateChange={setSelectedDate}></HabitDatePicker>
+          {/* Status Filter */}
+          <div className="flex gap-2 items-center">
+            <label
+              htmlFor="status_filter"
+              className="text-sm font-light text-greyText"
+            >
+              Status
+            </label>
+            <select
+              name="status"
+              id="status_filter"
+              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+              onChange={(e) => {const selected = defaultStatuses.find((s)=>s.label===e.target.value);
+                if(selected) setHabitStatusFilter(selected);
+              }}
+              value={habitStatusFilter.label}
+            >
+              {defaultStatuses.map((s) => (
+                <option key={s.label} value={s.label}>{s.label}</option>
+              ))}
+            </select>
           </div>
 
+          <div className="">
+            <HabitDatePicker
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+            ></HabitDatePicker>
+          </div>
         </div>
       </div>
 
@@ -288,75 +311,74 @@ const HabitsGrid = () => {
         {/* ✅ Rows */}
         {!loading && totalHabits > 0 && (
           <>
-          {console.log("Selected Date:", selectedDate)}
+            {console.log("Selected Date:", selectedDate)}
 
             {habits.map((habit) => {
-              const isLogged = habit.HabitLog && habit.HabitLog.length>0
-              
-              console.log("HabitLog raw:", habit.HabitLog)
+              const isLogged =
+                habit.HabitLog && habit.HabitLog[0]?.completed === true;
 
+              return (
+                <div
+                  key={habit.id}
+                  className="grid grid-cols-12 gap-4 px-2 py-3 w-full border-b border-lightGreyBorder items-center hover:bg-lightGreyBorder/30"
+                >
+                  <div className="flex gap-4 items-center  col-span-5 text-sm font-semibold">
+                    {habit.name}
 
+                    <div className="border border-lightGreyBorder rounded-full px-2 py-0.5 text-xs font-light bg-lightBlueBorder  h-fit text-greyText">
+                      {habit.category}
+                    </div>
+                  </div>
+                  <div className="col-span-2">{habit.frequency}</div>
+                  <div className=" col-span-2">{habit.progress}%</div>
+                  <div className="  flex gap-1 col-span-2 ">
+                    <Flame className="size-5 text-orange-400" />
+                    {habit.streak || 0} days
+                  </div>
 
-              
-              return(
-              <div
-                key={habit.id}
-                className="grid grid-cols-12 gap-4 px-2 py-3 w-full border-b border-lightGreyBorder items-center hover:bg-lightGreyBorder/30"
-              >
-                <div className="flex gap-4 items-center  col-span-5 text-sm font-semibold">
-                  {habit.name}
+                  {/* Actions */}
 
-                  <div className="border border-lightGreyBorder rounded-full px-2 py-0.5 text-xs font-light bg-lightBlueBorder  h-fit text-greyText">
-                    {habit.category}
+                  <div className="flex col-span-1 justify-center">
+                    <div className=" flex items-center justify-center  md:hidden">
+                      <HabitEllipsesMenu
+                        onEdit={(habit) => {
+                          setSelectedHabit(habit);
+                          setShowHabitModal(true);
+                        }}
+                        onDelete={(habit) => {
+                          setSelectedHabit(habit);
+                          setShowPopup(true);
+                        }}
+                        habit={habit}
+                      />
+                    </div>
+
+                    <div className=" gap-2 hidden md:flex">
+                      <LogHabit
+                        habit={habit}
+                        selectedDate={selectedDate}
+                        isLogged={isLogged}
+                      />
+
+                      <PenSquare
+                        onClick={() => {
+                          setSelectedHabit(habit);
+                          setShowHabitModal(true);
+                        }}
+                        className="size-5 stroke-1 hover:stroke-2 text-greyText  cursor-pointer"
+                      />
+                      <Trash2
+                        className="size-5 stroke-1 hover:stroke-2 text-red-500 cursor-pointer"
+                        onClick={() => {
+                          setSelectedHabit(habit); // 👈 store habit
+                          setShowPopup(true);
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="col-span-2">{habit.frequency}</div>
-                <div className=" col-span-2">{habit.progress}%</div>
-                <div className="  flex gap-1 col-span-2 ">
-                  <Flame className="size-5 text-orange-400" />
-                  {habit.streak || 0} days
-                </div>
-
-                {/* Actions */}
-
-                <div className="flex col-span-1 justify-center">
-                  <div className=" flex items-center justify-center  md:hidden">
-                    <HabitEllipsesMenu
-                      onEdit={(habit) => {
-                        setSelectedHabit(habit);
-                        setShowHabitModal(true);
-                      }}
-                      onDelete={(habit) => {
-                        setSelectedHabit(habit);
-                        setShowPopup(true);
-                      }}
-                      habit={habit}
-                    />
-                  </div>
-                  
-                  <div className=" gap-2 hidden md:flex">
-
-                    <LogHabit  habit={habit} selectedDate={selectedDate} isLogged={isLogged}/>
-
-                    <PenSquare
-                      onClick={() => {
-                        setSelectedHabit(habit);
-                        setShowHabitModal(true);
-                      }}
-                      className="size-5 stroke-1 hover:stroke-2 text-greyText  cursor-pointer"
-                    />
-                    <Trash2
-                      className="size-5 stroke-1 hover:stroke-2 text-red-500 cursor-pointer"
-                      onClick={() => {
-                        setSelectedHabit(habit); // 👈 store habit
-                        setShowPopup(true);
-                      }}
-                    />
-                    
-                  </div>
-                </div>
-              </div>)
-})}
+              );
+            })}
           </>
         )}
       </div>

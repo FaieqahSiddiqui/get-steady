@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
-import { createClient } from "@/supabase/clients";
-import { useHabits } from "@/app/hooks/useHabit";
 import HabitFormModal from "./HabitFormModal";
 
 type ButtonProps={
