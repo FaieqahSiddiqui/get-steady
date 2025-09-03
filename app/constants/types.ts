@@ -21,3 +21,13 @@ id: string;
   };
 
 }
+
+export type HabitLog={
+  id: number;
+  date: Date;
+  completed: boolean;
+};
+
+export interface HabitWithLogs extends Habit {
+  HabitLog: HabitLog[];
+};

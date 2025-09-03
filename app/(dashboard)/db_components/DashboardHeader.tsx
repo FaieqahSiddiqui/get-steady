@@ -44,9 +44,10 @@ console.log('USer',user)
               <Menu className="h-9 w-9 p-2 text-gray-400" />
             </button>
           </div>
-          <Link href="/">
+          {/* <Link href="/">
             <Logo />
-          </Link>
+          </Link> */}
+          <Logo />
         </div>
 
         <div className="flex place-items-end space-x-4">

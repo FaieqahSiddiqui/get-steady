@@ -42,7 +42,7 @@ const HabitSearchbar = ({searchQuery, onSearchChange}:HabitProps) => {
   }
 
   return (
-    <div className="relative w-full rounded-md ">
+    <div className="relative w-full rounded-md">
       <Search className="absolute size-4 text-greyText left-2 top-1/2 -translate-y-1/2" /> 
       {/*flex items-center rounded-md -mr-6 z-1 w-sm*/}
       <input

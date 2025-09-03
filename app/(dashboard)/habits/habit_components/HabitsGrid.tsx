@@ -1,21 +1,31 @@
-'use client'
-import {useEffect, useMemo, useState} from "react";
-import { EllipsisVertical,Trash2, PenSquare, ArrowDownZA, ArrowDownAZ, Rocket, Sparkles, Loader2} from "lucide-react";
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Flame,
+  Trash2,
+  PenSquare,
+  ArrowDownZA,
+  ArrowDownAZ,
+  Rocket,
+  Sparkles,
+  Loader2,
+} from "lucide-react";
 // import { createClient } from "@/supabase/server";
 import { useHabits } from "@/app/hooks/useHabit";
 import DeleteHabit from "./DeleteHabit";
-import { Habit } from "../../../constants/types";
+import { Habit, HabitWithLogs } from "../../../constants/types";
 import HabitFormModal from "./HabitFormModal";
 import HabitSearchbar from "../habit_components/HabitSearchbar";
 import Paginator from "./Paginator";
 import NewHabitButton from "./NewHabitButton";
+import HabitEllipsesMenu from "./HabitEllipsesMenu";
+import HabitDatePicker from "./HabitDatePicker";
+import LogHabit from "./LogHabit";
 
 //import debounce from "lodash.debounce"
 
-
-
 const HabitsGrid = () => {
-/*  const sampleHabits = [
+  /*  const sampleHabits = [
     {
       id: "1",
       name: "Read for 30 minutes",
@@ -84,61 +94,68 @@ const HabitsGrid = () => {
   //console.log("Rendering HabitsGrid");
 
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [showHabitModal, setShowHabitModal] = useState(false);
-    const [selectedHabit, setSelectedHabit] = useState<Habit|null>(null); 
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');  
-    const [habitsPerPage, setHabitsPerPage] = useState<number>(5);
-    const [currentPage, setCurrentPage] = useState(1);
+const defaultCategories = ["All", "Study", "Health", "Learning", "Other"];
+const defaultFrequency = ["All", "Daily", "Weekly", "Monthly"];
+const defaultStatuses = [
+  { label: "All", value: null },
+  { label: "Completed", value: true },
+  { label: "Incomplete", value: false },
+];
 
-    const [searchTerm, setSearchTerm]= useState("");
-    
+  const [showPopup, setShowPopup] = useState(false);
+  const [showHabitModal, setShowHabitModal] = useState(false);
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [habitsPerPage, setHabitsPerPage] = useState<number>(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [frequencyFilter, setFrequencyFilter] = useState("All");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [habitStatusFilter, setHabitStatusFilter]=useState(defaultStatuses[0]);
 
+  const [searchTerm, setSearchTerm] = useState("");
 
-    const handleSelectChange=(e: React.ChangeEvent<HTMLSelectElement>)=>
-    { 
-      setHabitsPerPage(Number(e.target.value));
-    }
-
-
-    // const debouncedSetSearchTerm = useMemo(
-    //   () =>
-    //     debounce((val: string) => {
-    //       setSearchTerm(val);
-    //     }, 300), //wait 300ms
-    //   []
-    // );
-
-    // //cleanup on unmount to avoid memory leak/ late call
-    // useEffect(()=>{
-    //   return () =>{
-    //     debouncedSetSearchTerm.cancel();
-    //   };
-    // }, [debouncedSetSearchTerm]);
+  
 
 
-    const {habits, loading, error, totalHabits , fetchHabits} = useHabits('name', sortOrder, habitsPerPage, currentPage, searchTerm); //sorting
-    const totalPages= Math.ceil(totalHabits/habitsPerPage);
- console.log("habits.length: ", habits.length);
- 
-    if (process.env.NODE_ENV === "development") {
-      console.log("My Supabase habits:", habits);
-      console.log("total Habits",totalHabits,
-        "total Pages",totalPages,
-        "habits per page",habitsPerPage);
-     
-    }
-    
-    
-    
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setHabitsPerPage(Number(e.target.value));
+  };
+
+  const { habits, loading, error, totalHabits, fetchHabits } = useHabits(
+    "name",
+    sortOrder,
+    habitsPerPage,
+    currentPage,
+    searchTerm,
+    categoryFilter,
+    frequencyFilter,
+    selectedDate,
+    habitStatusFilter.value //(null | true | false)
+  ); //sorting
+  const totalPages = Math.ceil(totalHabits / habitsPerPage);
+  console.log("habits.length: ", habits.length);
+
+  if (process.env.NODE_ENV === "development") {
+    console.log("My Supabase habits:", habits);
+    console.log(
+      "total Habits",
+      totalHabits,
+      "total Pages",
+      totalPages,
+      "habits per page",
+      habitsPerPage
+    );
+  }
 
   return (
-    <div className="border border-lightGreyBorder bg-BG/30  rounded-lg flex flex-col justify-center items-center">
+    <div className="border border-lightGreyBorder bg-BG/30 rounded-xl flex flex-col justify-center items-center h-[70vh] nm:h-[80vh] ">
       {/* Filter, Tabs & Search */}
 
-      <div className="flex justify-between items-center  bg-BG/30 border  border-lightGreyBorder   py-2 px-4 mb-3 w-full">
-        <div>
-          {/* <HabitSearchbar searchQuery={searchTerm} onSearchChange={(val) => {debouncedSetSearchTerm(val); setCurrentPage(1);}}/> */}
+      <div className="flex justify-between items-center bg-BG/30  p-3  w-full">
+        {" "}
+        {/* mb-3 border border-lightGreyBorder*/}
+        <div className="w-full sm:w-64 md:w-80">
 
           <HabitSearchbar
             searchQuery={searchTerm}
@@ -148,35 +165,86 @@ const HabitsGrid = () => {
             }}
           />
         </div>
+        <div className="flex gap-5">
+          {/* Frequency Filter */}
+          <div className="flex gap-2 items-center">
+            <label
+              htmlFor="frequency_filter"
+              className="text-sm font-light text-greyText"
+            >
+              Frequency
+            </label>
+            <select
+              name="frequency"
+              id="frequency_filter"
+              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+              onChange={(e) => setFrequencyFilter(e.target.value)}
+              value={frequencyFilter}
+            >
+              {defaultFrequency.map((f) => (
+                <option key={f}>{f}</option>
+              ))}
+            </select>
+          </div>
 
-        {/* Setting Items per page */}
-        <div className="flex gap-2 border border-pink-600">
-          <label
-            htmlFor="items_per_page"
-            className="border border-amber-300 w-fit text-sm"
-          >
-            Items per page
-          </label>
-          <select
-            name="per_page"
-            id="items_per_page"
-            className="border border-amber-900"
-            onChange={handleSelectChange}
-            value={habitsPerPage}
-          >
-            <option> 5</option>
-            <option> 10</option>
-            <option> 15</option>
-            <option> 20</option>
-          </select>
+          {/* Category Filter */}
+          <div className="flex gap-2 items-center">
+            <label
+              htmlFor="category_filter"
+              className="text-sm font-light text-greyText"
+            >
+              Category
+            </label>
+            <select
+              name="category"
+              id="category_filter"
+              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              value={categoryFilter}
+            >
+              {defaultCategories.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Status Filter */}
+          <div className="flex gap-2 items-center">
+            <label
+              htmlFor="status_filter"
+              className="text-sm font-light text-greyText"
+            >
+              Status
+            </label>
+            <select
+              name="status"
+              id="status_filter"
+              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+              onChange={(e) => {const selected = defaultStatuses.find((s)=>s.label===e.target.value);
+                if(selected) setHabitStatusFilter(selected);
+              }}
+              value={habitStatusFilter.label}
+            >
+              {defaultStatuses.map((s) => (
+                <option key={s.label} value={s.label}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="">
+            <HabitDatePicker
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+            ></HabitDatePicker>
+          </div>
         </div>
       </div>
 
       {/* Habit Grid */}
 
-      <div className="border grid grid-cols-12 gap-4 p-4 border-b border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 dark:text-gray-400 w-full pr-7">
+      <div className=" grid grid-cols-12 gap-4 py-4 px-2 border-t border-b  border-b-lightGreyBorder border-t-lightGreyBorder text-sm font-medium text-greyText w-full bg-BG pr-6 ">
         {/* Headers */}
-        <div className="border border-red-500 col-span-5 flex gap-3 items-center ">
+        <div className=" col-span-5 flex gap-3 items-center font-semibold ">
           {sortOrder === "asc" ? (
             <span title="Sort Z to A" aria-label="Sort Z to A">
               <ArrowDownZA
@@ -194,27 +262,30 @@ const HabitsGrid = () => {
           )}
           Habit
         </div>
-        <div className="border border-red-500 col-span-2">Frequency</div>
-        <div className="border border-red-500 col-span-2">Progress</div>
-        <div className="border border-red-500 col-span-2">Streak</div>
-        <div className="border border-red-500 col-span-1 text-center hidden md:block">
+        <div className="col-span-2 font-semibold">Frequency</div>
+        <div className="col-span-2 font-semibold">Progress</div>
+        <div className="col-span-2 ml-5 font-semibold">Streak</div>
+        <div className="col-span-1 ml-5 font-semibold text-center hidden md:block">
           Actions
         </div>
       </div>
 
       {/* Habit Rows */}
 
-    <div className={`w-full h-[50vh] ${loading || totalHabits===0 ? "overflow-hidden" : "overflow-auto"} `}>
-        
+      <div
+        // className={`w-full h-[50vh] ${
+        //   loading || totalHabits === 0 ? "overflow-hidden" : "overflow-auto"
+        // } `}
+
+        className="w-full flex-1 overflow-auto"
+      >
         {/* ✅ Loading */}
         {loading && (
-            <div className="flex items-center h-full justify-center  overflow-hidden ">
-              {/* Loading habits... */}
-              <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
-            </div>
-          )}
-       
-
+          <div className="flex items-center h-full justify-center  overflow-hidden ">
+            {/* Loading habits... */}
+            <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+          </div>
+        )}
 
         {/* ✅ Empty state */}
 
@@ -238,48 +309,77 @@ const HabitsGrid = () => {
         )}
 
         {/* ✅ Rows */}
-        {!loading && totalHabits>0 && (
-        <>
-        {habits.map((habit) => (
-          <div
-            key={habit.id}
-            className="border grid grid-cols-12 gap-4 p-3 w-full border-b border-lightGreyBorder items-center"
-          >
-            <div className="border col-span-5">{habit.name}</div>
-            <div className="border col-span-2">{habit.frequency}</div>
-            <div className="border col-span-2">{habit.progress}%</div>
-            <div className="border col-span-2">{habit.streak} days</div>
-            <div className="border col-span-1 justify-end">
-              {/* <EllipsisVertical className="size-5 border border-amber-300" /> */}
-              <div className="flex gap-2">
-                <Trash2
-                  className="size-5 border border-amber-300 cursor-pointer"
-                  onClick={() => {
-                    setSelectedHabit(habit); // 👈 store habit
-                    setShowPopup(true);
-                  }}
-                />
-                <PenSquare
-                  onClick={() => {
-                    setSelectedHabit(habit);
-                    setShowHabitModal(true);
-                  }}
-                  className="size-5 border border-amber-300 cursor-pointer"
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-        </>)}
+        {!loading && totalHabits > 0 && (
+          <>
+            {console.log("Selected Date:", selectedDate)}
 
-        {/* Pagination */}
+            {habits.map((habit) => {
+              const isLogged =
+                habit.HabitLog && habit.HabitLog[0]?.completed === true;
 
-        {totalHabits > habitsPerPage && (
-          <Paginator
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+              return (
+                <div
+                  key={habit.id}
+                  className="grid grid-cols-12 gap-4 px-2 py-3 w-full border-b border-lightGreyBorder items-center hover:bg-lightGreyBorder/30"
+                >
+                  <div className="flex gap-4 items-center  col-span-5 text-sm font-semibold">
+                    {habit.name}
+
+                    <div className="border border-lightGreyBorder rounded-full px-2 py-0.5 text-xs font-light bg-lightBlueBorder  h-fit text-greyText">
+                      {habit.category}
+                    </div>
+                  </div>
+                  <div className="col-span-2">{habit.frequency}</div>
+                  <div className=" col-span-2">{habit.progress}%</div>
+                  <div className="  flex gap-1 col-span-2 ">
+                    <Flame className="size-5 text-orange-400" />
+                    {habit.streak || 0} days
+                  </div>
+
+                  {/* Actions */}
+
+                  <div className="flex col-span-1 justify-center">
+                    <div className=" flex items-center justify-center  md:hidden">
+                      <HabitEllipsesMenu
+                        onEdit={(habit) => {
+                          setSelectedHabit(habit);
+                          setShowHabitModal(true);
+                        }}
+                        onDelete={(habit) => {
+                          setSelectedHabit(habit);
+                          setShowPopup(true);
+                        }}
+                        habit={habit}
+                      />
+                    </div>
+
+                    <div className=" gap-2 hidden md:flex">
+                      <LogHabit
+                        habit={habit}
+                        selectedDate={selectedDate}
+                        isLogged={isLogged}
+                      />
+
+                      <PenSquare
+                        onClick={() => {
+                          setSelectedHabit(habit);
+                          setShowHabitModal(true);
+                        }}
+                        className="size-5 stroke-1 hover:stroke-2 text-greyText  cursor-pointer"
+                      />
+                      <Trash2
+                        className="size-5 stroke-1 hover:stroke-2 text-red-500 cursor-pointer"
+                        onClick={() => {
+                          setSelectedHabit(habit); // 👈 store habit
+                          setShowPopup(true);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
         )}
       </div>
 
@@ -297,6 +397,42 @@ const HabitsGrid = () => {
         }}
         initialHabit={selectedHabit}
       ></HabitFormModal>
+
+      <div className="w-full relative flex items-center justify-center min-h-[48px] ">
+        {/* Pagination */}
+
+        {totalHabits > habitsPerPage && (
+          <div className="p-2 ">
+            <Paginator
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          </div>
+        )}
+
+        {/* Setting Items per page */}
+        <div className="flex gap-2 items-center ml-auto absolute right-0 pr-4 ">
+          <label
+            htmlFor="items_per_page"
+            className="text-sm font-light text-greyText"
+          >
+            Items per page
+          </label>
+          <select
+            name="per_page"
+            id="items_per_page"
+            className="border border-lightGreyBorder rounded-md bg-BG px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+            onChange={handleSelectChange}
+            value={habitsPerPage}
+          >
+            <option> 5</option>
+            <option> 10</option>
+            <option> 15</option>
+            <option> 20</option>
+          </select>
+        </div>
+      </div>
     </div>
   );
 };

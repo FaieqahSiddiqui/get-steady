@@ -105,7 +105,7 @@ useEffect(() => {
   
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50  flex items-center justify-center">
-          <div className="bg-BG rounded-xl p-6 w-full max-w-md shadow-xl" onClick={(e)=>e.stopPropagation()}>
+          <div className="bg-BG rounded-xl p-6 w-full max-w-md shadow-xl border border-lightGreyBorder" onClick={(e)=>e.stopPropagation()}>
             {/* Popup header */}
             <div className="flex justify-between mb-6">
               <h3 className="font-medium text-xl"> 
