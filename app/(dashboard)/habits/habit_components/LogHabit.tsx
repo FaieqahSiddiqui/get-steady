@@ -13,6 +13,8 @@ const LogHabit = ({ habit, selectedDate, isLogged }: HabitLogProps) => {
   const handleHabitLog = async () => {
     try {
       console.log("isLogged in Log habit: ", isLogged);
+      console.log("Habit in Log habit: ", habit);
+
       if (!habit || !selectedDate) return;
 
       const { data: userData, error: userError } =
@@ -23,7 +25,11 @@ const LogHabit = ({ habit, selectedDate, isLogged }: HabitLogProps) => {
       }
       const user = userData.user;
       //const dateString = selectedDate.toLocaleDateString("en-CA");
-      const dateString = selectedDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
+     // const dateString = selectedDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
+     const dateString = selectedDate.toLocaleDateString("en-CA")
+
+      console.log("Date String in Log habit: ", dateString);
+
 
       //1. check current state
       const { data: existing, error: fetchError } = await supabase

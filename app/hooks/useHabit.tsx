@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 //import { createClient } from "@/supabase/clients"; // This should return the browser-side supabase client
 import { Habit,HabitWithLogs } from "../constants/types";
 import { supabase } from "@/app/utils/supabase/createClient";
+import { calculateStreak } from "../utils/calculateStreak";
 
 
 export const useHabits = (
@@ -72,11 +73,11 @@ export const useHabits = (
       query = query.or("HabitLog.completed.eq.false,HabitLog.id.is.null");
     }
 
-          if(selectedDate){
-            //const formattedDate = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD
-            const formattedDate = selectedDate.toLocaleDateString("en-CA"); 
-            query = query.eq('HabitLog.date',formattedDate);
-          }
+          // if(selectedDate){
+          //   //const formattedDate = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD
+          //   const formattedDate = selectedDate.toLocaleDateString("en-CA"); 
+          //   query = query.eq('HabitLog.date',formattedDate);
+          // }
         // Case-insensitive partial match for category
         if (category.trim() !== "" &&  category!=="All") {
           query = query.ilike('category', `%${category}%`);
@@ -102,9 +103,21 @@ export const useHabits = (
             setError(error.message?? "Failed to fetch habits");
         }
         else{
-            setHabits(data);
+
+          //habit streaks
+
+          const enrichedHabits = (data as HabitWithLogs[]).map((habit)=> {
+            const streak = calculateStreak(habit.HabitLog || []);
+            return {...habit, streak};
+          });
+
+          setHabits(enrichedHabits);
+
+
+            //setHabits(data);
             setTotalHabits(count||0);
-            console.log("Hook Habits: ",data);
+            //console.log("Hook Habits: ",data);
+             console.log("Hook Habits: ",enrichedHabits);
         }
         setLoading(false);
     }

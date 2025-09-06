@@ -314,8 +314,12 @@ const defaultStatuses = [
             {console.log("Selected Date:", selectedDate)}
 
             {habits.map((habit) => {
-              const isLogged =
-                habit.HabitLog && habit.HabitLog[0]?.completed === true;
+              // const isLogged =
+              //   habit.HabitLog && habit.HabitLog[0]?.completed === true;
+
+              const isLogged = habit.HabitLog.some(
+                (log)=> new Date(log.date).toLocaleDateString("en-CA")===selectedDate?.toLocaleDateString("en-CA") && log.completed
+              );
 
               return (
                 <div
@@ -333,7 +337,9 @@ const defaultStatuses = [
                   <div className=" col-span-2">{habit.progress}%</div>
                   <div className="  flex gap-1 col-span-2 ">
                     <Flame className="size-5 text-orange-400" />
-                    {habit.streak || 0} days
+                    {habit.streak || 0} {habit.frequency==="Daily"?"days":habit.frequency==="Weekly"?"weeks":"months"}
+
+                    
                   </div>
 
                   {/* Actions */}
