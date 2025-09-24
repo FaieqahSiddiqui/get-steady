@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Habit, HabitWithLogs } from "../constants/types";
 import { supabase } from "@/app/utils/supabase/createClient";
 import { calculateStreak } from "../utils/calculateStreak";
+import { shouldKeepHabit } from "../utils/filterHabits";
+import { calculateCompletionRate } from "../utils/calculateCompeltionRate";
 
 export const useHabits = (
   sortBy: keyof Habit = "name", // default sort by name not`created_at`
@@ -16,7 +18,6 @@ export const useHabits = (
   selectedDate: Date | null,
   completed: boolean | null = null
 ) => {
-  //const [habits, setHabits] = useState<Habit[]>([]);
   const [habits, setHabits] = useState<HabitWithLogs[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +47,9 @@ export const useHabits = (
     //***********MAIN QUERY BEFORE HABIT LOG JOIN************
     //let query = supabase.from('Habit').select('*', {count: 'exact'}).order(sortBy, {ascending:sortOrder === 'asc'}).range(from,to);
 
+
+    // ✅ Always fetch habits + ALL their logs (so streaks are accurate)
+
     let query = supabase
       .from("Habit")
       .select(
@@ -64,6 +68,8 @@ export const useHabits = (
     //       query = query.eq("HabitLog.completed", completed);
     //     }
 
+
+    /*
     // ✅ Completed = true → only habits with at least one completed log
     if (completed === true) {
       query = query.eq("HabitLog.completed", true);
@@ -73,6 +79,8 @@ export const useHabits = (
     else if (completed === false) {
       query = query.or("HabitLog.completed.eq.false,HabitLog.id.is.null");
     }
+
+    */
 
     // if(selectedDate){
     //   //const formattedDate = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD
@@ -103,10 +111,19 @@ export const useHabits = (
     } else {
       //habit streaks
 
-      const enrichedHabits = (data as HabitWithLogs[]).map((habit) => {
+      let enrichedHabits = (data as HabitWithLogs[]).map((habit) => {
         const streak = calculateStreak(habit,habit.HabitLog || []);
-        return { ...habit, streak };
-      });
+        const completionRate = calculateCompletionRate(habit, habit.HabitLog || []);
+
+        return { ...habit, streak, progress: completionRate} // 👈 reuse progress field };
+      })
+
+
+      if (completed !== null && selectedDate) {
+        enrichedHabits = enrichedHabits.filter((habit) =>
+          shouldKeepHabit(habit, habit.HabitLog || [], selectedDate, completed)
+        );
+      }
 
       setHabits(enrichedHabits);
 
