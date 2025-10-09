@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';  // Don't forget the styles
 import {ChevronLeft, ChevronRight, Calendar1} from "lucide-react";
+import {useUser} from '@/app/contexts/UserContext';
 
 
 
@@ -11,6 +12,10 @@ type DatePickerProps={
 }
 
 const HabitDatePicker = ({selectedDate, onDateChange}:DatePickerProps) => {
+
+  const formatDate=(date:Date) => date.toLocaleDateString("en-CA");
+  const isToday= selectedDate !=null && formatDate(selectedDate) === formatDate(new Date());
+  const {user}= useUser();
 
   const goToPrevDay = () => {
     if (selectedDate) {
@@ -37,14 +42,13 @@ const HabitDatePicker = ({selectedDate, onDateChange}:DatePickerProps) => {
     <div className="flex justify-center items-center">
       
         {/* Custom Navigation Arrows */}
-        <div className="flex justify-between items-center gap-2">
+        <div className="flex justify-between items-center gap-1">
           {/* Left arrow (previous month) */}
           <button
             onClick={goToPrevDay}
-            className="text-xl font-bold text-greyText cursor-pointer"
+            className="text-sm font-bold text-greyText cursor-pointer"
           >
-           
-            <ChevronLeft/>
+            <ChevronLeft size={20}/>
           </button>
 
           {/* DatePicker */}
@@ -52,12 +56,15 @@ const HabitDatePicker = ({selectedDate, onDateChange}:DatePickerProps) => {
             <DatePicker
             selected={selectedDate}
             onChange={(date) => onDateChange(date)} // Allow null in the onChange handler
-            className="p-1 pl-5 border text-center border-lightGreyBorder bg-BG rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="p-1 pl-5 border text-sm text-center border-lightGreyBorder bg-BG rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             dateFormat="MMMM d, yyyy"
             placeholderText="Select a date"
+            maxDate={new Date()}        
+            //minDate={user?.created_at ? new Date(user.created_at) : undefined}
+
           />
 
-          <Calendar1 className='absolute left-3 top-1/2 transform -translate-y-1/2 size-5 text-greyText'/>
+          <Calendar1 className='absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-greyText'/>
 
           </div>
           
@@ -65,9 +72,10 @@ const HabitDatePicker = ({selectedDate, onDateChange}:DatePickerProps) => {
           {/* Right arrow (next month) */}
           <button
             onClick={goToNextDay}
-            className="text-xl font-bold text-greyText cursor-pointer"
+            className={`text-sm font-bold text-greyText ${isToday? "cursor-auto text-greyText/20": "cursor-pointer"}`}
+            disabled={isToday}
           >
-            <ChevronRight/>
+            <ChevronRight size={20}/>
           </button>
         </div>
     </div>

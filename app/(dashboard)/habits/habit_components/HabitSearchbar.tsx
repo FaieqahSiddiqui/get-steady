@@ -53,7 +53,7 @@ const HabitSearchbar = ({searchQuery, onSearchChange}:HabitProps) => {
         value = {inputValue}
         onChange={handleChange}
         placeholder="Search habits..."
-        className="border border-lightGreyBorder text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500 pl-8 pr-8 py-2 rounded-md bg-iconHoverBG"
+        className="border border-lightGreyBorder text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500 pl-8 pr-8 py-1.5 rounded-md bg-iconHoverBG"
       />
       {inputValue &&
       <CircleX 

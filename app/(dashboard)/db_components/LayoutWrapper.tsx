@@ -20,7 +20,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         <Sidebar isOpen={isSidebarCollapsed} />
         
         {/* Only pt-16 is needed */}
-        <div className={`bg-gradient-to-b h-screen overflow-y-hidden  border border-green-500 from-heroBgStart to-BG w-full pt-21 pl-8 pr-8 ${isSidebarCollapsed? 'ml-62' : 'ml-16'}  `}>
+        <div className={`bg-gradient-to-b h-screen overflow-y-hidden  from-heroBgStart to-BG w-full pt-21 pl-8 pr-8 ${isSidebarCollapsed? 'ml-62' : 'ml-16'}  `}>
           {children}
         </div>
       </div>
