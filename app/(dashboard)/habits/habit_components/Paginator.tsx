@@ -34,7 +34,7 @@ const Paginator = ({totalPages, currentPage, onPageChange,windowSize=5}:paginato
         <button
             onClick={()=>onPageChange(Math.max(currentPage-1, 1))}
             disabled={currentPage===1}
-            className='border-2 text-sm border-lightGreyBorder rounded-md py-1 px-2 mr-2 cursor-pointer'
+            className='border-1 text-sm border-lightGreyBorder rounded-md py-1 px-2 mr-2 cursor-pointer'
         
         > 
         <div className="flex gap-1 items-center justify-center pr-1.5">
@@ -59,7 +59,7 @@ const Paginator = ({totalPages, currentPage, onPageChange,windowSize=5}:paginato
         <button
             onClick={()=>onPageChange(currentPage+1)}
             disabled={currentPage===totalPages}
-            className={`border-2 text-sm border-lightGreyBorder rounded-md py-1 px-2 ml-2 cursor-pointer`}
+            className={`border-1 text-sm border-lightGreyBorder rounded-md py-1 px-2 ml-2 cursor-pointer`}
         >
             <div className="flex gap-1 items-center justify-center pl-1.5">
              Next <ChevronRight size={16} className=''/> 

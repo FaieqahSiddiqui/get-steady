@@ -75,7 +75,7 @@ const LogHabit = ({ habit, selectedDate, isLogged }: HabitLogProps) => {
   };
   return (
     <CircleCheckBig
-      className={`size-5 stroke-1 hover:stroke-2 cursor-pointer ${
+      className={`size-4 stroke-1 hover:stroke-2 cursor-pointer ${
         isLogged ? "text-green-500" : "text-greyText"
       }`}
       onClick={handleHabitLog}

@@ -1,5 +1,12 @@
 export type AuthView = "login" | "signup" | "forgot" | "reset";
 
+
+export const defaultHabitStatuses = [
+  { label: "All", value: null },
+  { label: "Completed", value: true },
+  { label: "Incomplete", value: false },
+] as const;
+
 export interface Habit {
 id: string;
   name: string;

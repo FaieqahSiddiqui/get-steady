@@ -19,12 +19,12 @@ const NewHabitButton = ({buttonText, variant }: ButtonProps) => {
           console.log("Current val of isOpen:",isOpen)
         }}
         // className="flex justify-center items-center h-fit gap-2 px-4 py-2 rounded-lg transition-all text-white bg-primaryBlue hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
-        className={`flex justify-center items-center h-fit gap-2 cursor-pointer
-          ${variant === 'primary'  && 'px-4 py-2 rounded-lg transition-all text-white bg-primaryBlue hover:shadow-lg hover:-translate-y-0.5'}
+        className={`flex justify-center items-center h-fit gap-1 cursor-pointer
+          ${variant === 'primary'  && 'px-3 py-1 rounded-lg transition-all text-white bg-primaryBlue hover:shadow-lg hover:-translate-y-0.5'}
           ${variant === 'secondary'  && 'text-blue-500 hover:underline'}`}
 
       >
-        <Plus className="w-4 h-4" /> {buttonText}
+        <Plus className="w-3 h-4" /> {buttonText}
       </button>
 
         <HabitFormModal isOpen={isOpen} onClose={() => {setIsOpen(false);     

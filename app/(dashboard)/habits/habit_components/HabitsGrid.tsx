@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Flame,
   Trash2,
@@ -8,8 +8,7 @@ import {
   ArrowDownAZ,
   Rocket,
   Sparkles,
-  Loader2,
-  Ellipsis,
+  Loader2
 } from "lucide-react";
 // import { createClient } from "@/supabase/server";
 import { useHabits } from "@/app/hooks/useHabit";
@@ -22,6 +21,10 @@ import NewHabitButton from "./NewHabitButton";
 import HabitEllipsesMenu from "./HabitEllipsesMenu";
 import HabitDatePicker from "./HabitDatePicker";
 import LogHabit from "./LogHabit";
+import * as Progress from "@radix-ui/react-progress";
+import HabitFrequencyFilter from "./HabitFrequencyFilter";
+import HabitCategoryFilter from "./HabitCategoryFilter";
+import HabitStatusFilter from "./HabitStatusFilter";
 
 //import debounce from "lodash.debounce"
 
@@ -149,12 +152,12 @@ const HabitsGrid = () => {
 
   return (
     <div className="border border-lightGreyBorder bg-BG/30 rounded-xl flex flex-col justify-center items-center h-[70vh] nm:h-[80vh] ">
-      {/* Filter, Tabs & Search */}
+      {/* Filter & Search */}
 
-      <div className="flex justify-between items-center bg-BG/30 p-3 w-full">
+      <div className="flex justify-between items-center bg-BG/30 p-2 w-full">
         {" "}
         {/* mb-3 border border-lightGreyBorder*/}
-        <div className="w-full sm:w-64 md:w-100">
+        <div className="w-full sm:w-64 md:w-100 mr-4">
           <HabitSearchbar
             searchQuery={searchTerm}
             onSearchChange={(val) => {
@@ -163,76 +166,22 @@ const HabitsGrid = () => {
             }}
           />
         </div>
-        <div className="flex gap-5">
-          {/* Frequency Filter */}
-          <div className="flex gap-2 items-center">
-            <label
-              htmlFor="frequency_filter"
-              className="text-sm font-light text-greyText"
-            >
-              Frequency
-            </label>
-            <select
-              name="frequency"
-              id="frequency_filter"
-              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
-              onChange={(e) => setFrequencyFilter(e.target.value)}
-              value={frequencyFilter}
-            >
-              {defaultFrequency.map((f) => (
-                <option key={f}>{f}</option>
-              ))}
-            </select>
-          </div>
 
+        {/* FILTERS */}
+        <div className=" flex gap-3 ">
+          {/* Frequency Filter */}
+
+          <HabitFrequencyFilter setFrequencyFilter={setFrequencyFilter} frequencyFilter={frequencyFilter} defaultFrequency={defaultFrequency}/>
+
+          
           {/* Category Filter */}
-          <div className="flex gap-2 items-center">
-            <label
-              htmlFor="category_filter"
-              className="text-sm font-light text-greyText"
-            >
-              Category
-            </label>
-            <select
-              name="category"
-              id="category_filter"
-              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              value={categoryFilter}
-            >
-              {defaultCategories.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </div>
+
+          <HabitCategoryFilter setCategoryFilter= {setCategoryFilter} categoryFilter={categoryFilter} defaultCategories={defaultCategories}/>
 
           {/* Status Filter */}
-          <div className="flex gap-2 items-center">
-            <label
-              htmlFor="status_filter"
-              className="text-sm font-light text-greyText"
-            >
-              Status
-            </label>
-            <select
-              name="status"
-              id="status_filter"
-              className="border border-lightGreyBorder rounded-md bg-BG px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
-              onChange={(e) => {
-                const selected = defaultStatuses.find(
-                  (s) => s.label === e.target.value
-                );
-                if (selected) setHabitStatusFilter(selected);
-              }}
-              value={habitStatusFilter.label}
-            >
-              {defaultStatuses.map((s) => (
-                <option key={s.label} value={s.label}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </div>
+
+          <HabitStatusFilter setHabitStatusFilter={setHabitStatusFilter} habitStatusFilter={habitStatusFilter} defaultStatuses={defaultStatuses} />
+          
 
           <div className="">
             <HabitDatePicker
@@ -245,7 +194,7 @@ const HabitsGrid = () => {
 
       {/* Habit Grid */}
 
-      <div className=" grid grid-cols-12 gap-4 py-4 px-4 border-t border-b  border-b-lightGreyBorder border-t-lightGreyBorder text-sm font-medium text-greyText w-full bg-BG pr-6 ">
+      <div className=" grid grid-cols-12 gap-4 py-3 px-3 border-t border-b  border-b-lightGreyBorder border-t-lightGreyBorder text-sm font-medium text-greyText w-full bg-BG pr-6 ">
         {/* Headers */}
         <div className=" col-span-5 flex gap-3 items-center font-semibold ">
           {sortOrder === "asc" ? (
@@ -265,10 +214,10 @@ const HabitsGrid = () => {
           )}
           Habit
         </div>
-        <div className="col-span-2 font-semibold">Frequency</div>
-        <div className="col-span-2 font-semibold">Progress</div>
-        <div className="col-span-2 ml-5 font-semibold">Streak</div>
-        <div className="col-span-1 ml-5 font-semibold text-center hidden md:block">
+        <div className="col-span-2 font-semibold text-sm">Frequency</div>
+        <div className="col-span-2 font-semibold text-sm">Progress</div>
+        <div className="col-span-2 ml-5 font-semibold text-sm">Streak</div>
+        <div className="col-span-1 ml-1 font-semibold text-sm text-center hidden md:block ">
           Actions
         </div>
       </div>
@@ -284,7 +233,7 @@ const HabitsGrid = () => {
       >
         {/* ✅ Loading */}
         {loading && (
-          <div className="flex items-center h-full justify-center  overflow-hidden ">
+          <div className="flex items-center h-full justify-center overflow-hidden ">
             {/* Loading habits... */}
             <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
           </div>
@@ -329,21 +278,22 @@ const HabitsGrid = () => {
               return (
                 <div
                   key={habit.id}
-                  className="grid grid-cols-12 gap-4 px-4 py-3 w-full border-b border-lightGreyBorder items-center hover:bg-lightGreyBorder/30"
+                  className="grid grid-cols-12 gap-4 px-4 py-2 w-full border-b border-lightGreyBorder items-center hover:bg-lightGreyBorder/30 "
                 >
-                  <div className="flex gap-4 items-center  col-span-5 text-sm font-semibold">
+                  <div className="flex gap-4 items-center col-span-5 text-xs ">
                     {habit.name}
 
-                    <div className="border border-lightGreyBorder rounded-full px-2 py-0.5 text-xs font-light bg-lightBlueBorder  h-fit text-greyText">
+                    
+                    <div className="border border-lightGreyBorder rounded-full px-1 py-0.5 text-[11px] font-light bg-lightBlueBorder  h-fit text-greyText">
                       {habit.category}
                     </div>
                   </div>
-                  <div className="col-span-2">{habit.frequency}</div>
+                  <div className="col-span-2 text-xs">{habit.frequency}</div>
 
                   {/* <div className=" col-span-2">{habit.progress}%</div> */}
 
                   <div
-                    className="col-span-2"
+                    className="col-span-2 text-xs"
                     title={
                       habit.frequency === "Daily"
                         ? "Completion rate over the last 7 days"
@@ -353,10 +303,20 @@ const HabitsGrid = () => {
                     }
                   >
                     {habit.progress}%
+                    <Progress.Root
+                    className="relative overflow-hidden bg-gray-200 rounded-full w-1/2 h-1 "
+                    value={habit.progress}>
+
+                      <Progress.ProgressIndicator className="bg-blue-500 h-full transition-transform duration-300 rounded-full" style={{ transform: `translateX(-${100 - habit.progress}%)` }}>
+                        
+                      </Progress.ProgressIndicator>
+
+                    </Progress.Root>
+                    {/* {habit.progress}% */}
                   </div>
 
-                  <div className="  flex gap-1 col-span-2 ">
-                    <Flame className="size-5 text-orange-400" />
+                  <div className="  flex gap-1 col-span-2 text-xs items-center">
+                    <Flame className= {`size-5 text-orange-400 ${habit.streak>0 ? "fill-orange-300" : ""} ` }/>
                     {habit.streak || 0}{" "}
                     {habit.frequency === "Daily"
                       ? "days"
@@ -367,8 +327,8 @@ const HabitsGrid = () => {
 
                   {/* Actions */}
 
-                  <div className="flex col-span-1 justify-center ">
-                    <div className=" flex items-center justify-center  md:hidden">
+                  <div className="flex col-span-1 justify-center items-center  ">
+                    <div className=" flex items-center justify-center md:hidden">
                       <HabitEllipsesMenu
                         onEdit={(habit) => {
                           setSelectedHabit(habit);
@@ -382,7 +342,7 @@ const HabitsGrid = () => {
                       />
                     </div>
 
-                    <div className=" gap-2 hidden md:flex">
+                    <div className="gap-2 items-center hidden md:flex">
                       <LogHabit
                         habit={habit}
                         selectedDate={selectedDate}
@@ -458,7 +418,7 @@ const HabitsGrid = () => {
         )}
 
         {/* Setting Items per page */}
-        <div className="flex gap-2 items-center ml-auto absolute right-0 pr-4 ">
+        <div className="flex gap-2 items-center ml-auto absolute right-0 pr-4">
           <label
             htmlFor="items_per_page"
             className="text-sm font-light text-greyText"
@@ -468,7 +428,7 @@ const HabitsGrid = () => {
           <select
             name="per_page"
             id="items_per_page"
-            className="border border-lightGreyBorder rounded-md bg-BG px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500 "
+            className="border border-lightGreyBorder rounded-md bg-BG px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-lightBlueBorder focus:border-blue-500"
             onChange={handleSelectChange}
             value={habitsPerPage}
           >
