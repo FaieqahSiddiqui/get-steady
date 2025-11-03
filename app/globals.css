@@ -1,11 +1,14 @@
 @import "tailwindcss";
-
+/*---break---*/
+@plugin "tailwindcss-animate";
+@import "tw-animate-css";
+/*---break---*/
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  
   --color-primaryBlue: #155dfc;
   --color-lightBlueBorder: #bbdefb;
   --color-lightGreyBorder: #e8eaed;
@@ -36,14 +39,13 @@
   --color-footerBgEnd:#1447e6;
 } */
 
-
 /* @media (prefers-color-scheme: dark) {
   :root {
     --background: #171717;
     --foreground: #ffffff; 
 
     --color: #ededed;
-    
+
     --color-lightBlueBorder: #064070;
     --color-lightGreyBorder: #48484982;
     --color-BG: #111827;
@@ -53,14 +55,12 @@
 } */
 /* --color-primaryBlue: #2b48a0; */
 
-
-
 .dark {
-  --background: #171717;
-  --foreground: #ffffff; 
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858); 
 
   --color: #ededed;
-  
+
   --color-lightBlueBorder: #064070;
   --color-lightGreyBorder: #48484982;
   --color-BG: #111827;
@@ -71,20 +71,212 @@
   --color-footerBgEnd:#1c398e;
   --color-iconHoverBG: #1e2939;
   --color-iconColor: #99a1af;
-  
- 
+  --card: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.929 0.013 255.508);
+  --primary-foreground: oklch(0.208 0.042 265.755);
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.551 0.027 264.364);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
+
 } 
 
 /* .light {
   --background: #f54747;
   --foreground: #f24cdf;
   --color: #b7f77b;
+} */ 
+
+/*---break---*/ 
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+} 
+
+/*---break---*/ 
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.129 0.042 264.695);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.129 0.042 264.695);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.129 0.042 264.695);
+  --primary: oklch(0.208 0.042 265.755);
+  --primary-foreground: oklch(0.984 0.003 247.858);
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar-primary: oklch(0.208 0.042 265.755);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.968 0.007 247.896);
+  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --sidebar-ring: oklch(0.704 0.04 256.788);
+} 
+
+/*---break---*/ 
+
+/* @layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 } */
 
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif; 
+/* === Fix for oversized "today" highlight in ShadCN Calendar === */
+/* .rdp-day_today button {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+} */
+
+/* === Fix for oversized "today" highlight in ShadCN Calendar === */
+/* .rdp-day_today button {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+} */
+
+/* Final override: remove the gray highlight from today's date */
+/* :root .rdp-day_today button,
+html .rdp-day_today button,
+body .rdp-day_today button {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+} */
+
+/* Override default day button size */
+
+
+/* .rdp-day > button {
+  width: var(--cell-size, 2.5rem);
+  height: var(--cell-size, 2.5rem);
+} */
+
+
+/* Make all day cells (including today & selected) the same size */
+/* .my-calendar .rdp-day > button,
+.my-calendar .rdp-day_today > button,
+.my-calendar .rdp-day_selected > button {
+  width: var(--cell-size, 2rem) !important;
+  height: var(--cell-size, 2rem) !important;
+  min-width: var(--cell-size, 2rem) !important;
+  min-height: var(--cell-size, 2rem) !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  aspect-ratio: 1 / 1 !important;  /* force perfect square */
+/* }  */
+
+/* Fix “today” background so it doesn’t appear larger
+.my-calendar .rdp-day_today > button::after {
+  content: none !important; /* remove default highlight ring */
+/* } */ 
+
+/* (Optional) give today a subtle color if you want */
+/* .my-calendar .rdp-day_today > button { */
+  /* background-color: hsl(var(--muted)) !important; subtle gray */
+  /* color: inherit !important; */
+  /* border-radius: 9999px; keep round shape */
+/* } */
+
+/* Maintain only horizontal spacing (no vertical gap) */
+/* .my-calendar .rdp-table {
+  border-collapse: separate !important;
+  border-spacing: 0.5rem 0 !important;
+} */
+/* Make the month name smaller in the calendar header */
+.react-datepicker__current-month {
+  font-size: 0.75rem !important; /* ~14px */
+  font-weight: 400; /* optional */
 }
 
+/* Optional: also shrink the day names ("Mon", "Tue", etc.) */
+.react-datepicker__day-name {
+  font-size: 0.75rem !important; /* ~12px */
+}

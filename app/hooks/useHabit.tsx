@@ -5,7 +5,7 @@ import { Habit, HabitWithLogs } from "../constants/types";
 import { supabase } from "@/app/utils/supabase/createClient";
 import { calculateStreak } from "../utils/calculateStreak";
 import { shouldKeepHabit } from "../utils/filterHabits";
-import { calculateCompletionRate } from "../utils/calculateCompeltionRate";
+import { calculateCompletionRate } from "../utils/calculateCompletionRate";
 
 export const useHabits = (
   sortBy: keyof Habit = "name", // default sort by name not`created_at`
