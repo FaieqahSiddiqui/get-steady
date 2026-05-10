@@ -1,9 +1,9 @@
 import React from 'react'
 
-const DashboardGraphs = () => {
+const DashboardHabitActivity = () => {
   return (
     <div>DashboardGraphs</div>
   )
 }
 
-export default DashboardGraphs
+export default DashboardHabitActivity

@@ -51,7 +51,7 @@ const HabitLogs = () => {
     <>
       {/* bg-lightGreyBorder */}
 
-      <div className="border border-lightGreyBorder p-2 rounded-md w-2/4  h-2/4 flex flex-col bg-BG">
+      <div className="border border-lightGreyBorder p-2 rounded-md w-2/4  h-full flex flex-col bg-BG">
         <div className="flex justify-between mb-2 items-center ">
           <h3 className="font-semibold mb-1 text-xs">
             Habit Logs for{" "}

@@ -18,6 +18,9 @@ type StatCardProps = {
   value: string | number;
   icon: string;
   color:string;
+  bottomText:string;
+  tooltip?: string; // new
+
 };
 
 // 👇 each icon is a React component that accepts SVG props
@@ -33,16 +36,25 @@ const iconMap: Record<string, IconComponent> = {
   signups: UserPlus,
 };
 
-const StatCard = ({ title, value, icon, color }: StatCardProps) => {
+//tailwind doesnt generate dynamic classes so we need to create a color map
+const colorMap: Record<string, string> = {
+  "yellow-400": "text-yellow-400",
+  "yellow-500": "text-yellow-500",
+};
+
+
+const StatCard = ({ title, value, icon, color, bottomText, tooltip }: StatCardProps) => {
   // 👇 safe fallback to Users icon
   const Icon = iconMap[icon] ?? Users;
 
   return (
-    <div className="bg-BG/70 rounded-md shadow p-2 text-center border border-gray-100 backdrop-blur-sm ">
+    <div title={tooltip} className="bg-BG/70 rounded-md shadow p-2 text-center border border-gray-100 backdrop-blur-sm ">
       
       <div className="flex gap-2 items-center border ">
         {/* Icon */}
-        <Icon className= {`w-4 h-4 text-${color} items-center`} />
+        {/* <Icon className= {`w-4 h-4 text-${color} items-center stroke-2`} /> */}
+        <Icon className={`w-4 h-4 stroke-2 ${colorMap[color]}`} />
+
 
         <p className="text-gray-500 text-sm">{title}</p>
       </div>
@@ -52,7 +64,7 @@ const StatCard = ({ title, value, icon, color }: StatCardProps) => {
         {value}
       </h2>
 
-      <p className="text-gray-500 text-xs">{title}</p>
+      <p className="text-gray-500 text-xs border">{bottomText}</p>
     </div>
   );
 };

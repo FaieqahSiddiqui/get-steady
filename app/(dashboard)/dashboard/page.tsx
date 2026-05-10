@@ -8,9 +8,7 @@ import DashboardCalendar from "../db_components/DashboardCalendar";
 import StatCard from "../db_components/StatCard";
 import { getDashboardStats } from "@/app/utils/dashboardStats";
 
-import {
-  Sparkles,
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { startTransition } from "react";
 import HabitLogs from "../db_components/HabitLogs";
 
@@ -76,6 +74,8 @@ export default async function dashboard() {
                 value={stat.value}
                 icon={stat.icon}
                 color={stat.color}
+                bottomText={stat.bottomText}
+                tooltip={stat.tooltip}
               />
             ))}
           </div>
@@ -83,10 +83,13 @@ export default async function dashboard() {
 
         {/* Calendar & Habit Logs */}
 
-      <HabitLogs/>
-      <div className="border ">Upcoming Habits</div>
+        <div className="border-2 border-pink-400 flex justify-end">
+          <HabitLogs />
+        </div>
 
-      <div className="flex justify-between w-full gap-5">
+        <div className="border ">Monthly/Weekly Activity</div>
+
+        <div className="flex justify-between w-full gap-5">
           <div className="border w-1/2">Frequency Graph</div>
 
           <div className="border w-1/2">Habit Category Graph</div>
