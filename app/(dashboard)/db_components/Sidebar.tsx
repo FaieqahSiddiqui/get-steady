@@ -46,7 +46,7 @@ const Sidebar = ({ isOpen }: Props) => {
               >
                 <item.icon className="w-4 h-4  flex-shrink-0" />
                 <span
-                  className={`transition-[opacity,width] duration-600 ease-in-out text-greyText overflow-hidden font-medium ${
+                  className={`transition-[opacity,width] duration-600 ease-in-out text-greyText overflow-hidden font-medium text-sm ${
                     isOpen ? "opacity-100 max-w-xs " : "opacity-0 max-w-0"
                   }`}
                 >
@@ -66,7 +66,7 @@ const Sidebar = ({ isOpen }: Props) => {
         <div className="flex items-center  px-1 gap-2 rounded-lg hover:bg-iconHoverBG transition-colors cursor-pointer">
           <ThemeToggle />
           <span
-            className={`transition-[opacity,width] duration-300 text-greyText font-medium ${
+            className={`transition-[opacity,width] duration-300 text-greyText font-medium text-sm ${
               isOpen ? "opacity-100 max-w-xs" : "opacity-0 max-w-0"
             } overflow-hidden`}
           >
@@ -83,7 +83,7 @@ const Sidebar = ({ isOpen }: Props) => {
           >
             <LogOut className="w-4 h-4 flex-shrink-0 text-gray-400" />
             <span
-              className={`transition-[opacity,width] duration-300 text-greyText font-medium ${
+              className={`transition-[opacity,width] duration-300 text-greyText font-medium text-sm ${
                 isOpen ? "opacity-100 max-w-xs" : "opacity-0 max-w-0"
               } overflow-hidden`}
             >
